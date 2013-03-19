@@ -1,6 +1,7 @@
 package org.coldswap.tracker;
 
-import java.lang.instrument.Instrumentation;
+import java.io.File;
+import java.io.FileFilter;
 
 /**
  * (C) Copyright 2013 Faur Ioan-Aurel.
@@ -19,11 +20,22 @@ import java.lang.instrument.Instrumentation;
  * faur
  * <p/>
  * Created at:
- * 2:01 PM       3/15/13
+ * 7:01 PM       3/17/13
  */
 
-public class ColdSwapAgent {
-    public static void premain(String args, Instrumentation inst) {
-        System.out.println("Dummy string");
+/**
+ * A file filter for {@link ClassListener}
+ */
+public class ClassFileFilter implements FileFilter {
+    private final String[] acceptedExt = new String[]{"class"};
+
+    @Override
+    public boolean accept(File file) {
+        for (String ext : acceptedExt) {
+            if (file.getName().endsWith(ext)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
