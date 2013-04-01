@@ -15,15 +15,29 @@
             <version>0.94</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>4.1</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.14</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                    <debug>true</debug>
                 </configuration>
             </plugin>
 
@@ -65,7 +79,7 @@
                             <Premain-Class>org.coldswap.agent.ColdSwapAgent</Premain-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                            <Boot-Class-Path>${project.build.finalName}.jar</Boot-Class-Path>
+                            <Boot-Class-Path>${project.build.finalName}.jar;${project.build.finalName}-jar-with-dependencies.jar</Boot-Class-Path>
                         </manifestEntries>
                     </archive>
                     <descriptorRefs>
@@ -87,6 +101,7 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                    <debug>true</debug>
                 </configuration>
             </plugin>
         </plugins>

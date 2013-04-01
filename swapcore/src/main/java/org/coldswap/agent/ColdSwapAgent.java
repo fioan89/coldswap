@@ -1,6 +1,8 @@
 package org.coldswap.agent;
 
+import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.tracker.ClassWatcher;
+import org.coldswap.transformer.ColdSwapTransformer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
@@ -30,12 +32,15 @@ import java.util.logging.Logger;
 public class ColdSwapAgent {
     private static AgentArgsParser argsParser;
     private static final Logger logger = Logger.getLogger(ColdSwapAgent.class.getName());
-
+    private static final ClassInstrumenter instrumenter =ClassInstrumenter.getInstance();
     static {
         logger.setLevel(Level.ALL);
     }
 
     public static void premain(String args, Instrumentation inst) {
+        inst.addTransformer(new ColdSwapTransformer());
+        // set instrumenter
+        instrumenter.setInstrumenter(inst);
         // set java library path for jnotify
         StringBuilder sb = new StringBuilder(System.getProperty("user.home"));
         String separator = System.getProperty("file.separator");
@@ -91,6 +96,7 @@ public class ColdSwapAgent {
             Thread t = new Thread(monitors[i]);
             t.setDaemon(true);
             t.start();
+
         }
     }
 }
