@@ -111,18 +111,34 @@ public class ColdSwapTransformer implements ClassFileTransformer {
             cr.accept(cn, 0);
 
             int acc = Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_STATIC;
-            String name = TransformerNameGenerator.getPublicMethodName(s);
-            ASMClassLoadTransformer tr = new NewFSFieldTransformer(s, acc, name, "Ljava/util/HashMap;", "Ljava/util/HashMap<Ljava/lang/String;Ljava/lang/Object;>;", null);
-            int opcode = tr.transformClass(cn);
+            String mName = TransformerNameGenerator.getPublicMethodName(s);
+            String fName = TransformerNameGenerator.getPublicStaticFieldName(s);
+            ASMClassLoadTransformer trPublicMethod = new NewFSFieldTransformer(s, acc, mName, "Ljava/util/HashMap;", "Ljava/util/HashMap<Ljava/lang/String;Ljava/lang/Object;>;", null);
+            ASMClassLoadTransformer trPublicStaticField = new NewFSFieldTransformer(s, acc, fName, "Ljava/util/HashMap;", "Ljava/util/HashMap<Ljava/lang/String;Ljava/lang/Object;>;", null);
+            int opcodeM = trPublicMethod.transformClass(cn);
+            int opcodeF = trPublicStaticField.transformClass(cn);
+
+
             cn.accept(cw);
             byte[] toRet = cw.toByteArray();
-
-            if (toRet != null && opcode >= 0) {
-                logger.info("Class <" + s + "> has been transformed!");
+            boolean successful = true;
+            if (toRet != null) {
+                if (!(opcodeM > 0)) {
+                    logger.severe("Could not insert field <" + mName + ">!");
+                    successful = false;
+                }
+                if (!(opcodeF > 0)) {
+                    logger.severe("Could not insert field <" + fName + ">!");
+                    successful = false;
+                }
+                if (successful) {
+                    logger.info("Successful transformation!");
+                }
+                return toRet;
             } else {
-                logger.severe("Field <" + name + "> could not been inserted!");
+                logger.severe("Could not transform class s");
+                return bytes;
             }
-            return toRet;
         }
         return bytes;
     }

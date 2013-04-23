@@ -79,7 +79,9 @@
                             <Premain-Class>org.coldswap.agent.ColdSwapAgent</Premain-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
-                            <Boot-Class-Path>${project.build.finalName}.jar;${project.build.finalName}-jar-with-dependencies.jar</Boot-Class-Path>
+                            <Boot-Class-Path>
+                                ${project.build.finalName}.jar;${project.build.finalName}-jar-with-dependencies.jar
+                            </Boot-Class-Path>
                         </manifestEntries>
                     </archive>
                     <descriptorRefs>

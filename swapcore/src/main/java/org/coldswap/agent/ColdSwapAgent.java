@@ -2,7 +2,6 @@ package org.coldswap.agent;
 
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.tracker.ClassWatcher;
-import org.coldswap.transformer.ColdSwapTransformer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
@@ -32,22 +31,22 @@ import java.util.logging.Logger;
 public class ColdSwapAgent {
     private static AgentArgsParser argsParser;
     private static final Logger logger = Logger.getLogger(ColdSwapAgent.class.getName());
-    private static final ClassInstrumenter instrumenter =ClassInstrumenter.getInstance();
+    private static final ClassInstrumenter instrumenter = ClassInstrumenter.getInstance();
+
     static {
         logger.setLevel(Level.ALL);
     }
 
     public static void premain(String args, Instrumentation inst) {
-        inst.addTransformer(new ColdSwapTransformer());
+        //inst.addTransformer(new ColdSwapTransformer());
         // set instrumenter
         instrumenter.setInstrumenter(inst);
         // set java library path for jnotify
         StringBuilder sb = new StringBuilder(System.getProperty("user.home"));
         String separator = System.getProperty("file.separator");
         sb.append(separator).append(".coldswap").append(separator).append("native").append(separator);
-
-        logger.info("Setting java.library.path=" + sb.toString());
-        System.setProperty("java.library.path", sb.toString());
+        String jlp = System.getProperty("java.library.path");
+        System.setProperty("java.library.path", jlp + ":" + sb.toString());
         // here is a fine trick. Usually java.library.path must be set before
         // the application is started. But here's a dirty trick that forces
         // the class loader to automatically reload the library paths by setting a
@@ -55,9 +54,9 @@ public class ColdSwapAgent {
         // Credits goes to folks at https://jdic.dev.java.net/
         Field fieldSysPath = null;
         try {
-            fieldSysPath = ClassLoader.class.getDeclaredField( "sys_paths" );
-            fieldSysPath.setAccessible( true );
-            fieldSysPath.set( null, null );
+            fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+            fieldSysPath.setAccessible(true);
+            fieldSysPath.set(null, null);
         } catch (NoSuchFieldException e) {
             logger.severe("Please restart coldswap with this argument: -Djava.library.path=\"" + sb.toString() + "\"\n");
             System.exit(0);
@@ -91,7 +90,7 @@ public class ColdSwapAgent {
             logger.severe("Invalid value provided to recursive argument!\n" + e.toString());
         }
 
-        for (int i=0; i< monitors.length; i++){
+        for (int i = 0; i < monitors.length; i++) {
             monitors[i] = new ClassWatcher(dirs[i], "true".equals(recursive));
             Thread t = new Thread(monitors[i]);
             t.setDaemon(true);

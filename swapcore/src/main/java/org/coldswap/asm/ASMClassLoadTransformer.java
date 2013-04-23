@@ -30,9 +30,9 @@ public interface ASMClassLoadTransformer {
     /**
      * Transforms a class.
      *
-     * @param classNode  A {@link org.objectweb.asm.tree.ClassNode} containing the class object model.
+     * @param classNode A {@link org.objectweb.asm.tree.ClassNode} containing the class object model.
      * @return a value greater or equal if it was
-     * successfully, negative otherwise.
+     *         successfully, negative otherwise.
      */
     public int transformClass(ClassNode classNode);
 }

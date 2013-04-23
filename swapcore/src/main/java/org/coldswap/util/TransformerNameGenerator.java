@@ -27,11 +27,23 @@ package org.coldswap.util;
 public class TransformerNameGenerator {
 
     /**
-     * Builds a name for a public field.
+     * Returns a name for a public field.
+     *
      * @param className that will be transformed.
      * @return a {@link java.lang.String}, which is a concatenation of class name  and "__publicMethodsContainer".
      */
     public static String getPublicMethodName(String className) {
         return className + "__publicMethodsContainer";
     }
+
+
+    public static String getPublicStaticFieldName(String className) {
+        return className + "__publicStaticFieldContainer";
+    }
+
+    public static String getPublicStaticFieldClassName(String containerClass, String fieldName) {
+        return "PS" + containerClass + fieldName;
+    }
+
+
 }

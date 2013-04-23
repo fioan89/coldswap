@@ -46,12 +46,13 @@ public class NewFSFieldTransformer implements ASMClassLoadTransformer {
 
     /**
      * Constructs an adapter for a new field insertion.
-     * @param owner Class owner of the new field.
+     *
+     * @param owner       Class owner of the new field.
      * @param fieldAccess a numeric value representing the access property of a field.
      *                    It can be a combination of ACC_PRIVATE, ACC_FINAL, ACC_STATIC,
      *                    ACC_PUBLIC, ACC_PROTECTED.
-     * @param name The name of the field.
-     * @param desc Field description.
+     * @param name        The name of the field.
+     * @param desc        Field description.
      */
     public NewFSFieldTransformer(String owner, int fieldAccess, String name, String desc, String signature, Object value) {
         this.owner = owner;
@@ -66,22 +67,22 @@ public class NewFSFieldTransformer implements ASMClassLoadTransformer {
     @Override
     public int transformClass(ClassNode classNode) {
         boolean clInitFound = false;
-        for (FieldNode fn: (List<FieldNode>)classNode.fields) {
+        for (FieldNode fn : (List<FieldNode>) classNode.fields) {
             if (name.equals(fn.name)) {
-                logger.severe("Duplicate field name <" + name + ">!" );
+                logger.severe("Duplicate field name <" + name + ">!");
                 return -1;
             }
         }
 
         classNode.fields.add(new FieldNode(fAcc, name, desc, signature, null));
         // initialize this field
-        for (MethodNode mn: (List<MethodNode>)classNode.methods) {
+        for (MethodNode mn : (List<MethodNode>) classNode.methods) {
             if ("<clinit>".equals(mn.name)) {
                 clInitFound = true;
                 InsnList inst = mn.instructions;
                 Iterator iter = inst.iterator();
                 while (iter.hasNext()) {
-                    AbstractInsnNode absIns = (AbstractInsnNode)iter.next();
+                    AbstractInsnNode absIns = (AbstractInsnNode) iter.next();
                     int opcode = absIns.getOpcode();
                     if (opcode == Opcodes.RETURN) {
                         InsnList l = new InsnList();
