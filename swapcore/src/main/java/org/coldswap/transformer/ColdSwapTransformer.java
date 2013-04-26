@@ -1,16 +1,14 @@
 package org.coldswap.transformer;
 
-import org.coldswap.asm.ASMClassLoadTransformer;
-import org.coldswap.asm.NewFSFieldTransformer;
-import org.coldswap.util.TransformerNameGenerator;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.*;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -106,37 +104,34 @@ public class ColdSwapTransformer implements ClassFileTransformer {
 
             ClassNode cn = new ClassNode(Opcodes.ASM4);
             ClassReader cr = new ClassReader(bytes);
-            ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES);
+            ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             // create adapter for field insertion.
             cr.accept(cn, 0);
 
-            int acc = Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_STATIC;
-            String mName = TransformerNameGenerator.getPublicMethodName(s);
-            String fName = TransformerNameGenerator.getPublicStaticFieldName(s);
-            ASMClassLoadTransformer trPublicMethod = new NewFSFieldTransformer(s, acc, mName, "Ljava/util/HashMap;", "Ljava/util/HashMap<Ljava/lang/String;Ljava/lang/Object;>;");
-            ASMClassLoadTransformer trPublicStaticField = new NewFSFieldTransformer(s, acc, fName, "Ljava/util/HashMap;", "Ljava/util/HashMap<Ljava/lang/String;Ljava/lang/Object;>;");
-            int opcodeM = trPublicMethod.transformClass(cn);
-            int opcodeF = trPublicStaticField.transformClass(cn);
+            // insert <clinit>V if it is not inserted
+            List methods = cn.methods;
+            boolean clInitFound = false;
+            for (MethodNode methodNode : (List<MethodNode>) methods) {
+                if ("<clinit>".equals(methodNode.name)) {
+                    clInitFound = true;
+                }
+            }
 
+            if (!clInitFound) {
+                MethodNode mn = new MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
+                InsnList insnList = mn.instructions;
+                insnList.add(new LabelNode());
+                insnList.add(new InsnNode(Opcodes.RETURN));
+                cn.methods.add(mn);
+            }
 
             cn.accept(cw);
             byte[] toRet = cw.toByteArray();
-            boolean successful = true;
             if (toRet != null) {
-                if (!(opcodeM > 0)) {
-                    logger.severe("Could not insert field <" + mName + ">!");
-                    successful = false;
-                }
-                if (!(opcodeF > 0)) {
-                    logger.severe("Could not insert field <" + fName + ">!");
-                    successful = false;
-                }
-                if (successful) {
-                    logger.info("Successful transformation!");
-                }
+                logger.info("Successful transformation!");
                 return toRet;
             } else {
-                logger.severe("Could not transform class s");
+                logger.severe("Could not transform class");
                 return bytes;
             }
         }
