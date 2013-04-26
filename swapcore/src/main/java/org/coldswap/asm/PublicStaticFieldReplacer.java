@@ -89,8 +89,6 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
                     iterator.remove();
                     // replace every reference
                     replaceReferences(cn, fNode);
-                    // try remove <clinit>
-                    removeCLInit(cn);
                 }
             }
         }
@@ -172,15 +170,17 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
                                     if (tmpInst.getOpcode() != Opcodes.F_NEW) {
                                         if (tmpInst.getOpcode() == Opcodes.PUTSTATIC) {
                                             staticFound = true;
+                                        } else {
+                                            firstInst = tmpInst;
+                                            counter++;
                                         }
-                                        firstInst = tmpInst;
-                                        counter++;
                                     }
                                 } else {
                                     staticFound = true;
                                 }
                                 ins2 = tmpInst;
                             }
+
                             break;
                         }
                     }
@@ -188,11 +188,11 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
 
                 if (firstInst != null) {
                     InsnList iList = new InsnList();
-                    iList.add(firstInst);
+                    iList.add(firstInst.clone(null));
                     counter--;
                     while (counter > 0) {
                         AbstractInsnNode ain = firstInst.getNext();
-                        iList.add(ain);
+                        iList.add(ain.clone(null));
                         counter--;
                         insnList.remove(firstInst);
                         firstInst = ain;
@@ -269,28 +269,6 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
     }
 
     /**
-     * Removes the <clinit> method from the class if there are no instructions
-     * in the method body.
-     *
-     * @param classNode containing the old class where new fields were found.
-     * @return <code>true</code> if the method could be removed, <code>false</code>
-     *         otherwise.
-     */
-    private boolean removeCLInit(ClassNode classNode) {
-        List<MethodNode> methodNodes = classNode.methods;
-        for (MethodNode methodNode : methodNodes) {
-            if ("<clinit>".equals(methodNode.name)) {
-                InsnList insnList = methodNode.instructions;
-                if (countInstructions(insnList) <= 1) {
-                    methodNodes.remove(methodNode);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * Finds where is stored the byte code for {@link PublicStaticFieldReplacer#aClass }
      *
      * @return returns the parent directory of class
@@ -309,21 +287,4 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
         return parent;
     }
 
-    /**
-     * Counts the number of instructions, excluding Opcodes.F_NEW == -1.
-     *
-     * @param insnList the list containing the instructions
-     * @return the number of instructions.
-     */
-    private int countInstructions(InsnList insnList) {
-        Iterator iterator = insnList.iterator();
-        int counter = 0;
-        while (iterator.hasNext()) {
-            AbstractInsnNode abstractInsnNode = (AbstractInsnNode) iterator.next();
-            if (abstractInsnNode.getOpcode() != Opcodes.F_NEW) {
-                counter++;
-            }
-        }
-        return counter;
-    }
 }

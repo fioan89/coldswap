@@ -5,7 +5,6 @@ import org.coldswap.asm.PublicStaticFieldReplacer;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.util.BytecodeClassLoader;
 
-import java.io.*;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
