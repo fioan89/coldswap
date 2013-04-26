@@ -29,7 +29,6 @@ import java.util.logging.Logger;
  */
 
 public class ColdSwapAgent {
-    private static AgentArgsParser argsParser;
     private static final Logger logger = Logger.getLogger(ColdSwapAgent.class.getName());
     private static final ClassInstrumenter instrumenter = ClassInstrumenter.getInstance();
 
@@ -52,7 +51,7 @@ public class ColdSwapAgent {
         // the class loader to automatically reload the library paths by setting a
         // static field to null.
         // Credits goes to folks at https://jdic.dev.java.net/
-        Field fieldSysPath = null;
+        Field fieldSysPath;
         try {
             fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
             fieldSysPath.setAccessible(true);
@@ -65,7 +64,7 @@ public class ColdSwapAgent {
             System.exit(0);
         }
 
-        argsParser = new AgentArgsParser(args);
+        AgentArgsParser argsParser = new AgentArgsParser(args);
         argsParser.buildArgs();
         String[] dirs;
         ClassWatcher[] monitors;

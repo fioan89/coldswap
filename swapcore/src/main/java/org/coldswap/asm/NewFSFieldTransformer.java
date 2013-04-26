@@ -37,7 +37,6 @@ public class NewFSFieldTransformer implements ASMClassLoadTransformer {
     private int fAcc;
     private String desc;
     private String signature;
-    private Object value;
     private final static Logger logger = Logger.getLogger(ASMClassLoadTransformer.class.getName());
 
     static {
@@ -54,13 +53,12 @@ public class NewFSFieldTransformer implements ASMClassLoadTransformer {
      * @param name        The name of the field.
      * @param desc        Field description.
      */
-    public NewFSFieldTransformer(String owner, int fieldAccess, String name, String desc, String signature, Object value) {
+    public NewFSFieldTransformer(String owner, int fieldAccess, String name, String desc, String signature) {
         this.owner = owner;
         this.name = name;
         this.fAcc = fieldAccess;
         this.desc = desc;
         this.signature = signature;
-        this.value = value;
     }
 
 

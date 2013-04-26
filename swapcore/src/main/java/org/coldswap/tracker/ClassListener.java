@@ -52,70 +52,51 @@ public class ClassListener implements JNotifyListener {
 
     @Override
     public void fileCreated(int i, String s, String s2) {
-//        if (filter.accept(new File(s2))) {
-//            System.out.println("New File Created:");
-//            System.out.println("watchID:" + String.valueOf(i));
-//            System.out.println("RootPath:" + s);
-//            System.out.println("Name:" + s2);
-//        }
+        //pass
     }
 
     @Override
     public void fileDeleted(int i, String s, String s2) {
-//        if (filter.accept(new File(s2))) {
-//            System.out.println("File Deleted:");
-//            System.out.println("watchID:" + String.valueOf(i));
-//            System.out.println("RootPath:" + s);
-//            System.out.println("Name:" + s2);
-//        }
+        //pass
     }
 
     @Override
     public void fileModified(int i, String root, String className) {
-        System.out.println("File modified");
-        if ((!"".equals(className)) && (null != className)) {
-            if (filter.accept(new File(className))) {
-                Map<String, Class<?>> loaded = ClassInstrumenter.getInstance().getLoadedClasses();
-                String cls = className.replace(".class", "").replace(System.getProperty("file.separator"), ".");
-                // maybe this className is located in one of  root subtrees, therefore whee need to remove the
-                // subtree from the className
-                int dotPosition = cls.lastIndexOf(".");
-                String clsName = cls;
-                if (dotPosition > -1) {
-                    clsName = cls.substring(dotPosition + 1);
-                }
-                if ((!"".equals(clsName)) && (null != clsName)) {
-                    Class<?> clazz = loaded.get(clsName);
-                    System.out.println("Cls:" + cls);
-                    System.out.println("Class Name:" + clsName);
-                    if (clazz == null) {
-                        logger.info(className + " is new class file!");
-                        try {
-                            Class<?> cla = Class.forName(clsName);
-                            ClassDefinition def = new ClassDefinition(cla, BytecodeClassLoader.loadClassBytes(root + this.sep + className));
-                            Instrumentation inst = ClassInstrumenter.getInstance().getInstrumenter();
-                            inst.redefineClasses(new ClassDefinition[]{def});
-                        } catch (ClassNotFoundException e) {
-                            logger.warning(e.toString());
-                        } catch (UnmodifiableClassException e) {
-                            logger.warning(toString());
-                        }
+        if ((!"".equals(className)) && (null != className)) if (filter.accept(new File(className))) {
+            Map<String, Class<?>> loaded = ClassInstrumenter.getInstance().getLoadedClasses();
+            String cls = className.replace(".class", "").replace(System.getProperty("file.separator"), ".");
+            logger.info("Class " + cls + " has been modified");
+            // maybe this className is located in one of  root subtrees, therefore whee need to remove the
+            // subtree from the className
+            int dotPosition = cls.lastIndexOf(".");
+            String clsName = cls;
+            if (dotPosition > -1) {
+                clsName = cls.substring(dotPosition + 1);
+            }
+            if ((!"".equals(clsName)) && (null != clsName)) {
+                Class<?> clazz = loaded.get(clsName);
+                if (clazz == null) {
+                    logger.info(className + " is new class file!");
+                    try {
+                        Class<?> cla = Class.forName(clsName);
+                        ClassDefinition def = new ClassDefinition(cla, BytecodeClassLoader.loadClassBytes(root + sep + className));
+                        Instrumentation inst = ClassInstrumenter.getInstance().getInstrumenter();
+                        inst.redefineClasses(def);
+                    } catch (ClassNotFoundException e) {
+                        logger.warning(e.toString());
+                    } catch (UnmodifiableClassException e) {
+                        logger.warning(toString());
+                    }
 
-                        return;
-                    }
-                    System.out.println("Clazz:" + clazz.getName());
-                    System.out.println("logger:" + logger.getName());
-                    logger.info("From memory:" + clazz.getName());
-                    if (clazz != null) {
-                        ClassRedefiner redefiner = new ClassRedefiner(clsName, root + this.sep + className);
-                        try {
-                            redefiner.redefineClass(clazz);
-                        } catch (UnmodifiableClassException e) {
-                            logger.severe(e.toString());
-                        } catch (ClassNotFoundException e) {
-                            logger.severe(e.toString());
-                        }
-                    }
+                    return;
+                }
+                ClassRedefiner redefiner = new ClassRedefiner(clsName, root + sep + className);
+                try {
+                    redefiner.redefineClass(clazz);
+                } catch (UnmodifiableClassException e) {
+                    logger.severe(e.toString());
+                } catch (ClassNotFoundException e) {
+                    logger.severe(e.toString());
                 }
             }
         }
@@ -123,12 +104,6 @@ public class ClassListener implements JNotifyListener {
 
     @Override
     public void fileRenamed(int i, String s, String s2, String s3) {
-        if (filter.accept(new File(s3))) {
-            System.out.println("File Renamed:");
-            System.out.println("watchID:" + String.valueOf(i));
-            System.out.println("RootPath:" + s);
-            System.out.println("Old Name:" + s2);
-            System.out.println("New Name:" + s2);
-        }
+        //pass
     }
 }

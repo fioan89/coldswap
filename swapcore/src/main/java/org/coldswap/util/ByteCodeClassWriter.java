@@ -47,7 +47,7 @@ public class ByteCodeClassWriter {
         }
         // create the file and schedule for removing when jvm stops
         File classToRemove = new File(outDir, className + ".class");
-        classToRemove.deleteOnExit();
+        //classToRemove.deleteOnExit();
         DataOutputStream dout = new DataOutputStream(new FileOutputStream(classToRemove));
         dout.write(bytes);
         dout.flush();
@@ -57,10 +57,6 @@ public class ByteCodeClassWriter {
     public static void setClassPath(String location) {
         outDir = new File(location);
         outDir.mkdir();
-    }
-
-    public static String getClassPath() {
-        return outDir.getAbsolutePath();
     }
 
 }

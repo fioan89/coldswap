@@ -113,8 +113,8 @@ public class ColdSwapTransformer implements ClassFileTransformer {
             int acc = Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_STATIC;
             String mName = TransformerNameGenerator.getPublicMethodName(s);
             String fName = TransformerNameGenerator.getPublicStaticFieldName(s);
-            ASMClassLoadTransformer trPublicMethod = new NewFSFieldTransformer(s, acc, mName, "Ljava/util/HashMap;", "Ljava/util/HashMap<Ljava/lang/String;Ljava/lang/Object;>;", null);
-            ASMClassLoadTransformer trPublicStaticField = new NewFSFieldTransformer(s, acc, fName, "Ljava/util/HashMap;", "Ljava/util/HashMap<Ljava/lang/String;Ljava/lang/Object;>;", null);
+            ASMClassLoadTransformer trPublicMethod = new NewFSFieldTransformer(s, acc, mName, "Ljava/util/HashMap;", "Ljava/util/HashMap<Ljava/lang/String;Ljava/lang/Object;>;");
+            ASMClassLoadTransformer trPublicStaticField = new NewFSFieldTransformer(s, acc, fName, "Ljava/util/HashMap;", "Ljava/util/HashMap<Ljava/lang/String;Ljava/lang/Object;>;");
             int opcodeM = trPublicMethod.transformClass(cn);
             int opcodeF = trPublicStaticField.transformClass(cn);
 

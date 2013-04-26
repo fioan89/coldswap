@@ -44,7 +44,7 @@ public class BytecodeClassLoader {
             in = new FileInputStream(new File(path));
             bao = new ByteArrayOutputStream();
             byte[] buffer = new byte[512];
-            int counter = 0;
+            int counter;
             while ((counter = in.read(buffer)) != -1) {
                 bao.write(buffer, 0, counter);
             }

@@ -78,8 +78,8 @@ public class AgentArgsParser {
      * Returns the corresponding value for an argument. If argName is not valid,
      * null is returned.
      *
-     * @param argName
-     * @return
+     * @param argName the name of the argument
+     * @return argument value.
      */
     public Object getArgument(String argName) {
         return this.opts.get(argName);

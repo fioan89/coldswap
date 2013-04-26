@@ -60,13 +60,5 @@ public class ClassInstrumenter {
 
     }
 
-    public void addLoadedClass(String name, Class<?> cls) {
-        this.loadedMap.put(name, cls);
-    }
-
-    public void removeLoadedClass(String name) {
-        this.loadedMap.remove(name);
-    }
-
 
 }
