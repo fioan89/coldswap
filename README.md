@@ -32,7 +32,7 @@ Add this option to your JVM options when you start the application:
 
 Licence
 -------
-Please take a look at **LICENSE** file
+Please take a look at **LICENCE** file
 
 Contacts
 --------
