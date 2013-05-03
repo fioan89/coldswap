@@ -29,7 +29,8 @@ import java.util.logging.Logger;
  */
 
 /**
- * Insert a new final static field and initialize it.
+ * Inserts fields and helper methods before code is loaded by
+ * the class loader.
  */
 public class NewFSFieldTransformer implements ASMClassLoadTransformer {
     private String owner;

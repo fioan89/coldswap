@@ -1,5 +1,6 @@
 package org.coldswap.asm;
 
+import org.coldswap.transformer.ReferenceReplacerManager;
 import org.coldswap.util.ByteCodeClassWriter;
 import org.coldswap.util.TransformerNameGenerator;
 import org.objectweb.asm.*;
@@ -36,6 +37,7 @@ import java.util.logging.Logger;
 
 public class PublicStaticFieldReplacer implements FieldReplacer {
     private final static Logger logger = Logger.getLogger(PublicStaticFieldReplacer.class.getName());
+    private ReferenceReplacerManager replacerManager = ReferenceReplacerManager.getInstance();
     private Class<?> aClass;
     private byte[] bytes;
 
@@ -72,12 +74,14 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
                     }
                 }
                 if (!foundIt) {
+                    // register a public static reference replacer
+                    String contClass = cn.name.substring(cn.name.lastIndexOf("/") + 1);
+                    String className = TransformerNameGenerator.getPublicStaticFieldClassName(contClass, fNode.name);
+                    replacerManager.registerFieldReferenceReplacer(new PublicStaticFieldReferenceReplacer(contClass, fNode, className));
                     // remove the static reference from <clinit>
                     InsnList insnList = cleanClInit(cn, fNode);
                     // create a new class that contains the field
-                    String contClass = cn.name.substring(cn.name.lastIndexOf("/") + 1);
                     byte[] newBClass = newFieldClass(cn, fNode, insnList);
-                    String className = TransformerNameGenerator.getPublicStaticFieldClassName(contClass, fNode.name);
                     try {
                         String cp = getClassPath();
                         ByteCodeClassWriter.setClassPath(cp);

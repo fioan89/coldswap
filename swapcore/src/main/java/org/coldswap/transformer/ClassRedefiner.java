@@ -35,6 +35,7 @@ import java.util.logging.Logger;
  * Redefine methods who's body has changed during runtime.
  */
 public class ClassRedefiner {
+    private ReferenceReplacerManager replacerManager = ReferenceReplacerManager.getInstance();
     private String clsName;
     private String path;
     private static final Logger logger = Logger.getLogger(ClassRedefiner.class.getName());
@@ -63,6 +64,8 @@ public class ClassRedefiner {
      */
     public void redefineClass(Class<?> clazz) throws UnmodifiableClassException, ClassNotFoundException {
         byte[] classBytes = BytecodeClassLoader.loadClassBytes(this.path);
+        // first make run the reference replacer
+        classBytes = replacerManager.runReferenceReplacer(classBytes);
         FieldReplacer rep = new PublicStaticFieldReplacer(clazz, classBytes);
         classBytes = rep.replace();
         ClassDefinition cls = new ClassDefinition(clazz, classBytes);

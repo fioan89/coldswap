@@ -4,6 +4,7 @@ package org.coldswap.tracker;
 import net.contentobjects.jnotify.JNotifyListener;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.transformer.ClassRedefiner;
+import org.coldswap.transformer.ReferenceReplacerManager;
 import org.coldswap.util.BytecodeClassLoader;
 
 import java.io.File;
@@ -43,6 +44,7 @@ import java.util.logging.Logger;
 public class ClassListener implements JNotifyListener {
     private final static String sep = System.getProperty("file.separator");
     private final static Logger logger = Logger.getLogger(ClassListener.class.getName());
+    private ReferenceReplacerManager refManager = ReferenceReplacerManager.getInstance();
 
     static {
         logger.setLevel(Level.ALL);
@@ -79,7 +81,10 @@ public class ClassListener implements JNotifyListener {
                     logger.info(className + " is new class file!");
                     try {
                         Class<?> cla = Class.forName(clsName);
-                        ClassDefinition def = new ClassDefinition(cla, BytecodeClassLoader.loadClassBytes(root + sep + className));
+                        byte[] bClass = BytecodeClassLoader.loadClassBytes(root + sep + className);
+                        // run reference replacer
+                        bClass = refManager.runReferenceReplacer(bClass);
+                        ClassDefinition def = new ClassDefinition(cla, bClass);
                         Instrumentation inst = ClassInstrumenter.getInstance().getInstrumenter();
                         inst.redefineClasses(def);
                     } catch (ClassNotFoundException e) {
