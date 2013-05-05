@@ -1,6 +1,5 @@
 package org.coldswap.asm;
 
-import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
 /**
@@ -28,9 +27,9 @@ import org.objectweb.asm.tree.FieldNode;
  */
 public class FieldBox {
 
-    protected FieldNode fieldToReplace;
-    protected String oldClass;
-    protected String newClass;
+    protected final FieldNode fieldToReplace;
+    protected final String oldClass;
+    protected final String newClass;
 
     /**
      * Constructs a container for a field reference that should be searched and replaced.

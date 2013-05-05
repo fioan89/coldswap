@@ -58,8 +58,12 @@ public class BytecodeClassLoader {
                 ret = bao.toByteArray();
             }
             try {
-                in.close();
-                bao.close();
+                if (in != null) {
+                    in.close();
+                }
+                if (bao != null) {
+                    bao.close();
+                }
             } catch (IOException e) {
                 // ignore
             }

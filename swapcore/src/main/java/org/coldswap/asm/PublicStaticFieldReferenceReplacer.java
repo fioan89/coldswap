@@ -41,6 +41,7 @@ public class PublicStaticFieldReferenceReplacer extends FieldBox implements Refe
         super(oldClass, fieldToReplace, newClass);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public int findAndReplace(ClassNode classNode) {
         int counter = 0;

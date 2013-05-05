@@ -27,7 +27,7 @@ import java.util.Map;
 public class ClassInstrumenter {
     private static final ClassInstrumenter instrumenter = new ClassInstrumenter();
     private Instrumentation inst;
-    private Map<String, Class<?>> loadedMap;
+    private final Map<String, Class<?>> loadedMap;
 
     private ClassInstrumenter() {
         this.loadedMap = new HashMap<String, Class<?>>();

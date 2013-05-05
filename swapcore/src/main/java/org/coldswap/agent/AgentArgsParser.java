@@ -38,8 +38,8 @@ import java.util.Map;
  * <p/>
  * Argument's are separated by ",".
  */
-public class AgentArgsParser {
-    private Map<String, Object> opts;
+class AgentArgsParser {
+    private final Map<String, Object> opts;
     private String args;
 
     public AgentArgsParser(String args) {

@@ -2,17 +2,17 @@ package org.coldswap.asm;
 
 import org.coldswap.transformer.ReferenceReplacerManager;
 import org.coldswap.util.ByteCodeClassWriter;
+import org.coldswap.util.ByteCodeGenerator;
+import org.coldswap.util.ClassUtil;
 import org.coldswap.util.TransformerNameGenerator;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -38,8 +38,12 @@ import java.util.logging.Logger;
 public class PublicStaticFieldReplacer implements FieldReplacer {
     private final static Logger logger = Logger.getLogger(PublicStaticFieldReplacer.class.getName());
     private ReferenceReplacerManager replacerManager = ReferenceReplacerManager.getInstance();
-    private Class<?> aClass;
+    private final Class<?> aClass;
     private byte[] bytes;
+
+    static {
+        logger.setLevel(Level.ALL);
+    }
 
     public PublicStaticFieldReplacer(Class<?> clazz, byte[] bytes) {
         this.aClass = clazz;
@@ -60,7 +64,7 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
             final FieldNode fNode = (FieldNode) iterator.next();
             int publicStatic = Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC;
             //int publicStaticFinal = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL;
-            // search only for public static and public static final fields
+            // search only for public static fields
             if ((fNode.access == publicStatic)) {
                 // check if this field exist in the old loaded class
                 // and if not proceed with the trick.
@@ -81,9 +85,9 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
                     // remove the static reference from <clinit>
                     InsnList insnList = cleanClInit(cn, fNode);
                     // create a new class that contains the field
-                    byte[] newBClass = newFieldClass(cn, fNode, insnList);
+                    byte[] newBClass = ByteCodeGenerator.newFieldClass(cn, fNode, insnList, className);
                     try {
-                        String cp = getClassPath();
+                        String cp = ClassUtil.getClassPath(aClass);
                         ByteCodeClassWriter.setClassPath(cp);
                         ByteCodeClassWriter.writeClass(className, newBClass);
                     } catch (IOException e) {
@@ -101,45 +105,13 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
     }
 
     /**
-     * Creates a new class containing the new static field.
-     *
-     * @param classNode        containing the old class.
-     * @param fieldNode        containing the old field.
-     * @param initInstructions a list of instructions that goes into <clinit>.
-     * @return an array of bytes which builds the new class.
-     */
-    private byte[] newFieldClass(ClassNode classNode, FieldNode fieldNode, InsnList initInstructions) {
-        String contClass = classNode.name.substring(classNode.name.lastIndexOf("/") + 1);
-        String className = TransformerNameGenerator.getPublicStaticFieldClassName(contClass, fieldNode.name);
-        ClassNode newClass = new ClassNode();
-        newClass.version = classNode.version;
-        newClass.access = Opcodes.ACC_PUBLIC;
-        newClass.signature = "L" + className + ";";
-        newClass.name = className;
-        newClass.superName = "java/lang/Object";
-        newClass.fields.add(new FieldNode(fieldNode.access, fieldNode.name, fieldNode.desc, fieldNode.desc, fieldNode.value));
-        if (initInstructions.size() > 0) {
-            MethodNode mn = new MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
-            InsnList il = mn.instructions;
-            il.add(new LabelNode());
-            il.add(initInstructions);
-            il.add(new FieldInsnNode(Opcodes.PUTSTATIC, className, fieldNode.name, fieldNode.desc));
-            il.add(new InsnNode(Opcodes.RETURN));
-            newClass.methods.add(mn);
-        }
-
-        ClassWriter newCWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-        newClass.accept(newCWriter);
-        return newCWriter.toByteArray();
-    }
-
-    /**
      * Removes any initializing reference of the field.
      *
      * @param classNode containing the old class.
      * @param fieldNode containing the old field.
      * @return the initializing list of instructions.
      */
+    @SuppressWarnings("unchecked")
     private InsnList cleanClInit(ClassNode classNode, FieldNode fieldNode) {
         List<MethodNode> methodNodes = classNode.methods;
         AbstractInsnNode firstInst = null;
@@ -270,25 +242,6 @@ public class PublicStaticFieldReplacer implements FieldReplacer {
                 }
             }
         }
-    }
-
-    /**
-     * Finds where is stored the byte code for {@link PublicStaticFieldReplacer#aClass }
-     *
-     * @return returns the parent directory of class
-     */
-    @SuppressWarnings("ConstantConditions")
-    private String getClassPath() {
-        String path;
-        path = aClass.getClassLoader().getResource(
-                aClass.getName().replace('.', '/') + ".class").toString();
-        String parent = null;
-        try {
-            parent = new File(new URI(path)).getParent();
-        } catch (URISyntaxException e) {
-            logger.warning(e.toString());
-        }
-        return parent;
     }
 
 }

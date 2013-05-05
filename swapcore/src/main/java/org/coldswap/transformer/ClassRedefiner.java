@@ -36,8 +36,8 @@ import java.util.logging.Logger;
  */
 public class ClassRedefiner {
     private ReferenceReplacerManager replacerManager = ReferenceReplacerManager.getInstance();
-    private String clsName;
-    private String path;
+    private final String clsName;
+    private final String path;
     private static final Logger logger = Logger.getLogger(ClassRedefiner.class.getName());
 
     static {

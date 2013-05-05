@@ -33,11 +33,11 @@ import java.util.logging.Logger;
  * the class loader.
  */
 public class NewFSFieldTransformer implements ASMClassLoadTransformer {
-    private String owner;
-    private String name;
-    private int fAcc;
-    private String desc;
-    private String signature;
+    private final String owner;
+    private final String name;
+    private final int fAcc;
+    private final String desc;
+    private final String signature;
     private final static Logger logger = Logger.getLogger(ASMClassLoadTransformer.class.getName());
 
     static {
@@ -63,6 +63,7 @@ public class NewFSFieldTransformer implements ASMClassLoadTransformer {
     }
 
 
+    @SuppressWarnings("unchecked")
     @Override
     public int transformClass(ClassNode classNode) {
         boolean clInitFound = false;

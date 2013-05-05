@@ -26,7 +26,7 @@ import java.io.FileFilter;
 /**
  * A file filter for {@link ClassListener}
  */
-public class ClassFileFilter implements FileFilter {
+class ClassFileFilter implements FileFilter {
     private final String[] acceptedExt = new String[]{"class"};
 
     @Override
