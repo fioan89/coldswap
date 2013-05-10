@@ -2,6 +2,7 @@ package org.coldswap.transformer;
 
 import org.coldswap.asm.FieldReplacer;
 import org.coldswap.asm.PrivateStaticFieldReplacer;
+import org.coldswap.asm.ProtectedStaticFieldReplacer;
 import org.coldswap.asm.PublicStaticFieldReplacer;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.util.BytecodeClassLoader;
@@ -75,6 +76,9 @@ public class ClassRedefiner {
         // on otjer classes.
         FieldReplacer psvRep = new PrivateStaticFieldReplacer(clazz, classBytes);
         classBytes = psvRep.replace();
+        // find protected fields and replace them
+        FieldReplacer prRep = new ProtectedStaticFieldReplacer(clazz, classBytes);
+        classBytes = prRep.replace();
         ClassDefinition cls = new ClassDefinition(clazz, classBytes);
         Instrumentation inst = ClassInstrumenter.getInstance().getInstrumenter();
         inst.redefineClasses(cls);

@@ -49,5 +49,9 @@ public class TransformerNameGenerator {
         return "PVS" + containerClass + fieldName;
     }
 
+    public static String getProtectedStaticFieldClassName(String containerClass, String fieldName) {
+        return "PRS" + containerClass + fieldName;
+    }
+
 
 }

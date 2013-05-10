@@ -6,6 +6,8 @@ Currently **coldswap** will reload any change like:
 
 * method body redefinition
 * new public static attribute
+* new private static attribute
+* new protected static attribute
 
 You don't need to run you java application in debug mode. You can run it normally with or without the
 aid of a powerful IDE like Eclipse or IntelliJ IDEA.
