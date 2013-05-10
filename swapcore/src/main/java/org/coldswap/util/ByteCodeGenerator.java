@@ -47,14 +47,16 @@ public class ByteCodeGenerator {
         newClass.name = className;
         newClass.superName = "java/lang/Object";
         newClass.fields.add(new FieldNode(fieldNode.access, fieldNode.name, fieldNode.desc, fieldNode.desc, fieldNode.value));
-        if (initInstructions.size() > 0) {
-            MethodNode mn = new MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
-            InsnList il = mn.instructions;
-            il.add(new LabelNode());
-            il.add(initInstructions);
-            il.add(new FieldInsnNode(Opcodes.PUTSTATIC, className, fieldNode.name, fieldNode.desc));
-            il.add(new InsnNode(Opcodes.RETURN));
-            newClass.methods.add(mn);
+        if (initInstructions != null) {
+            if (initInstructions.size() > 0) {
+                MethodNode mn = new MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
+                InsnList il = mn.instructions;
+                il.add(new LabelNode());
+                il.add(initInstructions);
+                il.add(new FieldInsnNode(Opcodes.PUTSTATIC, className, fieldNode.name, fieldNode.desc));
+                il.add(new InsnNode(Opcodes.RETURN));
+                newClass.methods.add(mn);
+            }
         }
 
         ClassWriter newCWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);

@@ -27,11 +27,65 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Simple static methods with the main purpose to extract informations
+ * Simple static methods with the main purpose to extract information's
  * from {@link Class} files.
  */
 public class ClassUtil {
     private static final Logger logger = Logger.getLogger(ClassUtil.class.getName());
+    public static final String fileSeparator = System.getProperty("file.separator");
+    public static final String[] skipTransforming = {
+            "java/applet",
+            "java/awt",
+            "java/beans",
+            "java/io",
+            "java/lang",
+            "java/lang",
+            "java/math",
+            "java/net",
+            "java/nio",
+            "java/rmi",
+            "java/security",
+            "java/sql",
+            "java/text",
+            "java/util",
+            "javax/accessibility",
+            "javax/activation",
+            "javax/activity",
+            "javax/annotation",
+            "javax/crypto",
+            "javax/imageio",
+            "javax/jws",
+            "javax/lang",
+            "javax/management",
+            "javax/naming",
+            "javax/net",
+            "javax/print",
+            "javax/rmi",
+            "javax/script",
+            "javax/security",
+            "javax/sound",
+            "javax/sql",
+            "javax/swing",
+            "javax/tools",
+            "javax/transaction",
+            "javax/xml",
+            "net/contentobjects",
+            "org/ietf/jgss",
+            "org/omg",
+            "org/w3c",
+            "org/xml/sax",
+            "org/coldswap",
+            "org/objectweb",
+            "sun/util",
+            "sun/misc",
+            "sun/net",
+            "sun/nio",
+            "sun/text",
+            "sun/reflect",
+            "sun/security",
+            "com/intellij"
+
+    };
 
     static {
         logger.setLevel(Level.ALL);

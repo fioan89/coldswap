@@ -50,7 +50,7 @@ public class ReferenceReplacerManager {
     }
 
     /**
-     * Starts the proces of find and replace for the given class node.
+     * Starts the process of find and replace for the given class node.
      *
      * @param clazz where to find and replace.
      * @return transformed class byte array.
@@ -60,7 +60,6 @@ public class ReferenceReplacerManager {
         ClassReader classReader = new ClassReader(clazz);
         ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classReader.accept(classNode, 0);
-        // replace public fields
         for (ReferenceReplacer replacer : fieldReferences) {
             replacer.findAndReplace(classNode);
         }

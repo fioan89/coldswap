@@ -24,7 +24,7 @@ import java.io.*;
 import java.util.logging.Logger;
 
 /**
- * Loads the bytecode of a class.
+ * Loads the byte code of a class.
  */
 
 public class BytecodeClassLoader {

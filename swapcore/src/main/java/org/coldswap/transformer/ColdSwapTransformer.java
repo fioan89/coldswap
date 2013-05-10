@@ -1,5 +1,6 @@
 package org.coldswap.transformer;
 
+import org.coldswap.util.ClassUtil;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -39,65 +40,11 @@ public class ColdSwapTransformer implements ClassFileTransformer {
         logger.setLevel(Level.ALL);
     }
 
-    private final String[] skipTransforming = {
-            "java/applet",
-            "java/awt",
-            "java/beans",
-            "java/io",
-            "java/lang",
-            "java/lang",
-            "java/math",
-            "java/net",
-            "java/nio",
-            "java/rmi",
-            "java/security",
-            "java/sql",
-            "java/text",
-            "java/util",
-            "javax/accessibility",
-            "javax/activation",
-            "javax/activity",
-            "javax/annotation",
-            "javax/crypto",
-            "javax/imageio",
-            "javax/jws",
-            "javax/lang",
-            "javax/management",
-            "javax/naming",
-            "javax/net",
-            "javax/print",
-            "javax/rmi",
-            "javax/script",
-            "javax/security",
-            "javax/sound",
-            "javax/sql",
-            "javax/swing",
-            "javax/tools",
-            "javax/transaction",
-            "javax/xml",
-            "net/contentobjects",
-            "org/ietf/jgss",
-            "org/omg",
-            "org/w3c",
-            "org/xml/sax",
-            "org/coldswap",
-            "org/objectweb",
-            "sun/util",
-            "sun/misc",
-            "sun/net",
-            "sun/nio",
-            "sun/text",
-            "sun/reflect",
-            "sun/security",
-            "com/intellij"
-
-    };
-
     @SuppressWarnings("unchecked")
     @Override
     public byte[] transform(ClassLoader classLoader, String s, Class<?> aClass, ProtectionDomain protectionDomain, byte[] bytes) throws IllegalClassFormatException {
         if (s != null && !"".equals(s)) {
-            for (String pack : skipTransforming) {
+            for (String pack : ClassUtil.skipTransforming) {
                 if (s.startsWith(pack)) {
                     return bytes;
                 }
@@ -108,7 +55,6 @@ public class ColdSwapTransformer implements ClassFileTransformer {
             ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             // create adapter for field insertion.
             cr.accept(cn, 0);
-
             // insert <clinit>V if it is not inserted
             List methods = cn.methods;
             boolean clInitFound = false;

@@ -25,7 +25,7 @@ import org.objectweb.asm.tree.ClassNode;
 
 public interface ReferenceReplacer {
     /**
-     * Finds and replace a reference in the bytecode.
+     * Finds and replace a reference in the byte code.
      *
      * @param classNode class node that contains the references who should be replaced.
      * @return the number of references found and replaced.

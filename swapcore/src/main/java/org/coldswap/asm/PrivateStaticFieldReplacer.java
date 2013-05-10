@@ -123,7 +123,7 @@ public class PrivateStaticFieldReplacer implements FieldReplacer {
                 while (iterator1.hasNext()) {
                     AbstractInsnNode ins2 = (AbstractInsnNode) iterator1.next();
                     // if a initializing has been found, then copy everything from
-                    // the coresponding label to the PUTSTATIC
+                    // the corresponding label to the PUTSTATIC
                     if (ins2.getOpcode() == Opcodes.PUTSTATIC) {
                         final Boolean[] fieldFound = {false};
                         final FieldNode fNode = fieldNode;
