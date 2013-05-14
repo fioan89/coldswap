@@ -33,8 +33,13 @@ import java.util.logging.Logger;
  * 7:43 PM       3/19/13
  */
 
-public class ColdSwapTransformer implements ClassFileTransformer {
-    private final static Logger logger = Logger.getLogger(ColdSwapTransformer.class.getName());
+/**
+ * Searches the class before is loaded to find the
+ * static initializer method(<clinit>). If it is not founded
+ * insert a default one.
+ */
+public class ClInitTransformer implements ClassFileTransformer {
+    private final static Logger logger = Logger.getLogger(ClInitTransformer.class.getName());
 
     static {
         logger.setLevel(Level.ALL);
@@ -53,7 +58,7 @@ public class ColdSwapTransformer implements ClassFileTransformer {
             ClassNode cn = new ClassNode(Opcodes.ASM4);
             ClassReader cr = new ClassReader(bytes);
             ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            // create adapter for field insertion.
+            // create adapter for method insertion.
             cr.accept(cn, 0);
             // insert <clinit>V if it is not inserted
             List methods = cn.methods;

@@ -1,16 +1,18 @@
-package org.coldswap.asm;
+package org.coldswap.asm.field;
 
+import org.coldswap.asm.FieldReplacer;
 import org.coldswap.transformer.ReferenceReplacerManager;
-import org.coldswap.util.*;
+import org.coldswap.util.ByteCodeClassWriter;
+import org.coldswap.util.ByteCodeGenerator;
+import org.coldswap.util.ClassUtil;
+import org.coldswap.util.TransformerNameGenerator;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,21 +33,20 @@ import java.util.logging.Logger;
  * faur
  * <p/>
  * Created at:
- * 4:56 PM       5/5/13
+ * 12:33 PM       4/13/13
  */
 
-public class ProtectedStaticFieldReplacer implements FieldReplacer {
-    private static final Logger logger = Logger.getLogger(ProtectedStaticFieldReplacer.class.getName());
-    private static final Map<FieldNode, InsnList> inheritedInitCode = new HashMap<FieldNode, InsnList>();
-    private final Class<?> aClass;
+public class PublicStaticFieldReplacer implements FieldReplacer {
+    private final static Logger logger = Logger.getLogger(PublicStaticFieldReplacer.class.getName());
     private ReferenceReplacerManager replacerManager = ReferenceReplacerManager.getInstance();
+    private final Class<?> aClass;
     private byte[] bytes;
 
     static {
         logger.setLevel(Level.ALL);
     }
 
-    public ProtectedStaticFieldReplacer(Class<?> clazz, byte[] bytes) {
+    public PublicStaticFieldReplacer(Class<?> clazz, byte[] bytes) {
         this.aClass = clazz;
         this.bytes = bytes;
     }
@@ -55,15 +56,17 @@ public class ProtectedStaticFieldReplacer implements FieldReplacer {
         ClassReader cr = new ClassReader(bytes);
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES);
         cr.accept(cn, 0);
-        // get a list of public/protected fields.
+        // get a list of public/protected/package/private fields but exclude
+        // inherited fields.
         Field[] refFields = aClass.getDeclaredFields();
-        List asmFields = getFields(cn);
+        List asmFields = cn.fields;
         Iterator iterator = asmFields.iterator();
         while (iterator.hasNext()) {
             final FieldNode fNode = (FieldNode) iterator.next();
-            int protectedStatic = Opcodes.ACC_STATIC | Opcodes.ACC_PROTECTED;
-            // search only for protected static fields
-            if ((fNode.access == protectedStatic)) {
+            int publicStatic = Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC;
+            //int publicStaticFinal = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL;
+            // search only for public static fields
+            if ((fNode.access == publicStatic)) {
                 // check if this field exist in the old loaded class
                 // and if not proceed with the trick.
                 boolean foundIt = false;
@@ -78,21 +81,11 @@ public class ProtectedStaticFieldReplacer implements FieldReplacer {
                 if (!foundIt) {
                     // register a public static reference replacer
                     String contClass = cn.name.substring(cn.name.lastIndexOf("/") + 1);
-                    String className = TransformerNameGenerator.getProtectedStaticFieldClassName(contClass, fNode.name);
-                    // make field access as public static
-                    fNode.access = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC;
-                    replacerManager.registerFieldReferenceReplacer(new ProtectedStaticFieldReferenceReplacer(contClass, fNode, className, contClass));
+                    String className = TransformerNameGenerator.getPublicStaticFieldClassName(contClass, fNode.name);
+                    replacerManager.registerFieldReferenceReplacer(new PublicStaticFieldReferenceReplacer(contClass, fNode, className));
                     // remove the static reference from <clinit>
-                    InsnList insnList = cleanClInit(cn, fNode, true);
-                    // because the field might be inherited from superclass we need to copy
-                    // the initializer from the parent.
-                    if ((insnList == null) || (insnList.size() > 0)) {
-                        insnList = inheritedInitCode.get(fNode);
-                    }
+                    InsnList insnList = cleanClInit(cn, fNode);
                     // create a new class that contains the field
-                    // before anything change the field access to public static so that it can be referenced
-                    // from other classes.
-                    fNode.access = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC;
                     byte[] newBClass = ByteCodeGenerator.newFieldClass(cn, fNode, insnList, className);
                     try {
                         String cp = ClassUtil.getClassPath(aClass);
@@ -117,12 +110,10 @@ public class ProtectedStaticFieldReplacer implements FieldReplacer {
      *
      * @param classNode containing the old class.
      * @param fieldNode containing the old field.
-     * @param canRemove <code>true</code> if this method should remove the initializing code and return it
-     *                  or <code>false</code> if you only want to return the init code.
      * @return the initializing list of instructions.
      */
     @SuppressWarnings("unchecked")
-    private InsnList cleanClInit(ClassNode classNode, FieldNode fieldNode, boolean canRemove) {
+    private InsnList cleanClInit(ClassNode classNode, FieldNode fieldNode) {
         List<MethodNode> methodNodes = classNode.methods;
         AbstractInsnNode firstInst = null;
         int counter = 0;
@@ -180,17 +171,13 @@ public class ProtectedStaticFieldReplacer implements FieldReplacer {
                         AbstractInsnNode ain = firstInst.getNext();
                         iList.add(ain.clone(null));
                         counter--;
-                        if (canRemove) {
-                            insnList.remove(firstInst);
-                        }
+                        insnList.remove(firstInst);
                         firstInst = ain;
                     }
-                    if (canRemove) {
-                        // remove last instruction and the putstatic instruction
-                        AbstractInsnNode putStatic = firstInst.getNext();
-                        insnList.remove(firstInst);
-                        insnList.remove(putStatic);
-                    }
+                    // remove last instruction and the putstatic instruction
+                    AbstractInsnNode putStatic = firstInst.getNext();
+                    insnList.remove(firstInst);
+                    insnList.remove(putStatic);
                     return iList;
                 }
             }
@@ -208,7 +195,7 @@ public class ProtectedStaticFieldReplacer implements FieldReplacer {
     private void replaceReferences(ClassNode classNode, FieldNode fieldNode) {
         List<MethodNode> methodNodes = classNode.methods;
         String contClass = classNode.name.substring(classNode.name.lastIndexOf("/") + 1);
-        final String className = TransformerNameGenerator.getProtectedStaticFieldClassName(contClass, fieldNode.name);
+        final String className = TransformerNameGenerator.getPublicStaticFieldClassName(contClass, fieldNode.name);
         for (MethodNode method : methodNodes) {
             InsnList inst = method.instructions;
             Iterator iter = inst.iterator();
@@ -258,43 +245,4 @@ public class ProtectedStaticFieldReplacer implements FieldReplacer {
         }
     }
 
-    /**
-     * Returns an array of fields that where declared in this class. In
-     * addition there are also the protected fields that were inherited.
-     *
-     * @param classNode {@link ClassNode} containing the new class version.
-     * @return a list of all fields including the inherited fields.
-     */
-    private List<FieldNode> getFields(ClassNode classNode) {
-        List<FieldNode> toRet = classNode.fields;
-        // get inherited package fields
-        try {
-            String superName = classNode.superName;
-            // filter superclasses
-            for (String pack : ClassUtil.skipTransforming) {
-                if (superName.startsWith(pack)) {
-                    return toRet;
-                }
-            }
-            Class<?> c = Class.forName(superName);
-            String path = ClassUtil.getClassPath(c);
-            path = path + ClassUtil.fileSeparator + superName + ".class";
-            byte[] clazz = BytecodeClassLoader.loadClassBytes(path);
-            ClassNode cNode = new ClassNode(Opcodes.ASM4);
-            ClassReader cr = new ClassReader(clazz);
-            cr.accept(cNode, 0);
-            List<FieldNode> superFields = cNode.fields;
-            for (FieldNode fieldNode : superFields) {
-                if (fieldNode.access == (Opcodes.ACC_STATIC | Opcodes.ACC_PROTECTED)) {
-                    toRet.add(fieldNode);
-                    InsnList code = cleanClInit(cNode, fieldNode, false);
-                    inheritedInitCode.put(fieldNode, code);
-                }
-            }
-
-        } catch (ClassNotFoundException e) {
-            logger.warning(e.toString());
-        }
-        return toRet;
-    }
 }

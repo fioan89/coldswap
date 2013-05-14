@@ -1,5 +1,7 @@
-package org.coldswap.asm;
+package org.coldswap.asm.field;
 
+import org.coldswap.asm.FieldBox;
+import org.coldswap.asm.ReferenceReplacer;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;

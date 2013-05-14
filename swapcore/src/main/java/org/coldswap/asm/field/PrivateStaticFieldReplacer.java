@@ -1,5 +1,6 @@
-package org.coldswap.asm;
+package org.coldswap.asm.field;
 
+import org.coldswap.asm.FieldReplacer;
 import org.coldswap.util.ByteCodeClassWriter;
 import org.coldswap.util.ByteCodeGenerator;
 import org.coldswap.util.ClassUtil;

@@ -1,9 +1,9 @@
 package org.coldswap.transformer;
 
 import org.coldswap.asm.FieldReplacer;
-import org.coldswap.asm.PrivateStaticFieldReplacer;
-import org.coldswap.asm.ProtectedStaticFieldReplacer;
-import org.coldswap.asm.PublicStaticFieldReplacer;
+import org.coldswap.asm.field.PrivateStaticFieldReplacer;
+import org.coldswap.asm.field.ProtectedStaticFieldReplacer;
+import org.coldswap.asm.field.PublicStaticFieldReplacer;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.util.BytecodeClassLoader;
 
