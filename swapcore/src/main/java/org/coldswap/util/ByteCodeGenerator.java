@@ -63,4 +63,36 @@ public class ByteCodeGenerator {
         newClass.accept(newCWriter);
         return newCWriter.toByteArray();
     }
+
+    /**
+     * Inserts in the helper method a list of instructions
+     *
+     * @param mNode      helper method
+     * @param toInsert   code to be inserted.
+     * @param methodName name of the method that contains the to be inserted code.
+     * @param nrOfParams the number of params that method to be inserted has.
+     * @return a list of instructions.
+     */
+    public static InsnList insertNewNotVoidMethod(MethodNode mNode, InsnList toInsert, String methodName, int nrOfParams) {
+        InsnList into = mNode.instructions;
+        AbstractInsnNode firstInst = into.getFirst();
+        InsnList tmp = new InsnList();
+        tmp.add(new LabelNode());
+        tmp.add(new IntInsnNode(Opcodes.BIPUSH, nrOfParams));
+        tmp.add(new VarInsnNode(Opcodes.ISTORE, 3));
+        tmp.add(new LabelNode());
+        tmp.add(new VarInsnNode(Opcodes.AALOAD, 1));
+        tmp.add(new LdcInsnNode(methodName));
+        tmp.add(new MethodInsnNode(Opcodes.H_INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z"));
+        LabelNode l1 = new LabelNode();
+        tmp.add(l1);
+        tmp.add(new JumpInsnNode(Opcodes.IFEQ, l1));
+        tmp.add(new VarInsnNode(Opcodes.AALOAD, 2));
+        tmp.add(new InsnNode(Opcodes.ARRAYLENGTH));
+        tmp.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        tmp.add(new JumpInsnNode(Opcodes.IF_ICMPNE, l1));
+        tmp.add(toInsert);
+        into.insertBefore(firstInst, tmp);
+        return into;
+    }
 }
