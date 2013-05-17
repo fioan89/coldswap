@@ -20,7 +20,7 @@ package org.coldswap.asm;
  * 8:19 PM       4/25/13
  */
 
-public interface FieldReplacer {
+public interface MemberReplacer {
     /**
      * Replaces a field from a class with another field.
      *

@@ -1,6 +1,6 @@
 package org.coldswap.transformer;
 
-import org.coldswap.asm.FieldReplacer;
+import org.coldswap.asm.MemberReplacer;
 import org.coldswap.asm.field.PrivateStaticFieldReplacer;
 import org.coldswap.asm.field.ProtectedStaticFieldReplacer;
 import org.coldswap.asm.field.PublicStaticFieldReplacer;
@@ -69,15 +69,15 @@ public class ClassRedefiner {
         // first make run the reference replacer
         classBytes = replacerManager.runReferenceReplacer(classBytes);
         // find new public static fields in the code and replace them
-        FieldReplacer psRep = new PublicStaticFieldReplacer(clazz, classBytes);
+        MemberReplacer psRep = new PublicStaticFieldReplacer(clazz, classBytes);
         classBytes = psRep.replace();
         // find new private static fields in the code and replace them
         // since we search for private fields we don't need to run a reference replacer
         // on otjer classes.
-        FieldReplacer psvRep = new PrivateStaticFieldReplacer(clazz, classBytes);
+        MemberReplacer psvRep = new PrivateStaticFieldReplacer(clazz, classBytes);
         classBytes = psvRep.replace();
         // find protected fields and replace them
-        FieldReplacer prRep = new ProtectedStaticFieldReplacer(clazz, classBytes);
+        MemberReplacer prRep = new ProtectedStaticFieldReplacer(clazz, classBytes);
         classBytes = prRep.replace();
         ClassDefinition cls = new ClassDefinition(clazz, classBytes);
         Instrumentation inst = ClassInstrumenter.getInstance().getInstrumenter();

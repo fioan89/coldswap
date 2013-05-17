@@ -1,6 +1,6 @@
 package org.coldswap.asm.field;
 
-import org.coldswap.asm.FieldReplacer;
+import org.coldswap.asm.MemberReplacer;
 import org.coldswap.util.ByteCodeClassWriter;
 import org.coldswap.util.ByteCodeGenerator;
 import org.coldswap.util.ClassUtil;
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * 3:31 PM       5/5/13
  */
 
-public class PrivateStaticFieldReplacer implements FieldReplacer {
+public class PrivateStaticFieldReplacer implements MemberReplacer {
     private final static Logger logger = Logger.getLogger(PrivateStaticFieldReplacer.class.getName());
     private final Class<?> aClass;
     private byte[] bytes;

@@ -23,7 +23,7 @@ import org.objectweb.asm.tree.FieldNode;
  */
 
 /**
- * Contains info about a field that need's to be searched and replaced.
+ * Contains info about a field that need to be searched and replaced.
  */
 public class FieldBox {
 

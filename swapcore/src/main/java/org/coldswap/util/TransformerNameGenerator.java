@@ -53,5 +53,9 @@ public class TransformerNameGenerator {
         return "PRS" + containerClass + fieldName;
     }
 
+    public static String getObjectMethodName(String containerClass) {
+        return "NMO" + containerClass + "newObjectMethod";
+    }
+
 
 }

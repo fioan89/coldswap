@@ -1,6 +1,6 @@
 package org.coldswap.asm.field;
 
-import org.coldswap.asm.FieldReplacer;
+import org.coldswap.asm.MemberReplacer;
 import org.coldswap.transformer.ReferenceReplacerManager;
 import org.coldswap.util.*;
 import org.objectweb.asm.*;
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * 4:56 PM       5/5/13
  */
 
-public class ProtectedStaticFieldReplacer implements FieldReplacer {
+public class ProtectedStaticFieldReplacer implements MemberReplacer {
     private static final Logger logger = Logger.getLogger(ProtectedStaticFieldReplacer.class.getName());
     private static final Map<FieldNode, InsnList> inheritedInitCode = new HashMap<FieldNode, InsnList>();
     private final Class<?> aClass;
