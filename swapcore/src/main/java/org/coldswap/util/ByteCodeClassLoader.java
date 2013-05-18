@@ -27,8 +27,8 @@ import java.util.logging.Logger;
  * Loads the byte code of a class.
  */
 
-public class BytecodeClassLoader {
-    private final static Logger logger = Logger.getLogger(BytecodeClassLoader.class.getName());
+public class ByteCodeClassLoader {
+    private final static Logger logger = Logger.getLogger(ByteCodeClassLoader.class.getName());
 
     /**
      * Loads the byte file of a class file.
