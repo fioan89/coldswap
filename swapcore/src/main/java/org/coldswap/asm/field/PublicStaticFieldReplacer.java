@@ -41,6 +41,7 @@ public class PublicStaticFieldReplacer implements MemberReplacer {
     private ReferenceReplacerManager replacerManager = ReferenceReplacerManager.getInstance();
     private final Class<?> aClass;
     private byte[] bytes;
+    private String classPackage = "";
 
     static {
         logger.setLevel(Level.ALL);
@@ -49,6 +50,12 @@ public class PublicStaticFieldReplacer implements MemberReplacer {
     public PublicStaticFieldReplacer(Class<?> clazz, byte[] bytes) {
         this.aClass = clazz;
         this.bytes = bytes;
+        String sPackage = "";
+        Package p = clazz.getPackage();
+        if (p != null) {
+            sPackage = p.getName();
+        }
+        classPackage = sPackage.replace(".", ClassUtil.fileSeparator) + ClassUtil.fileSeparator;
     }
 
     public byte[] replace() {
@@ -82,11 +89,12 @@ public class PublicStaticFieldReplacer implements MemberReplacer {
                     // register a public static reference replacer
                     String contClass = cn.name.substring(cn.name.lastIndexOf("/") + 1);
                     String className = TransformerNameGenerator.getPublicStaticFieldClassName(contClass, fNode.name);
-                    replacerManager.registerFieldReferenceReplacer(new PublicStaticFieldReferenceReplacer(contClass, fNode, className));
+                    replacerManager.registerFieldReferenceReplacer(new PublicStaticFieldReferenceReplacer(contClass,
+                            fNode, classPackage + className));
                     // remove the static reference from <clinit>
                     InsnList insnList = cleanClInit(cn, fNode);
                     // create a new class that contains the field
-                    byte[] newBClass = ByteCodeGenerator.newFieldClass(cn, fNode, insnList, className);
+                    byte[] newBClass = ByteCodeGenerator.newFieldClass(cn, fNode, insnList, classPackage + className);
                     try {
                         String cp = ClassUtil.getClassPath(aClass);
                         ByteCodeClassWriter.setClassPath(cp);
@@ -195,7 +203,7 @@ public class PublicStaticFieldReplacer implements MemberReplacer {
     private void replaceReferences(ClassNode classNode, FieldNode fieldNode) {
         List<MethodNode> methodNodes = classNode.methods;
         String contClass = classNode.name.substring(classNode.name.lastIndexOf("/") + 1);
-        final String className = TransformerNameGenerator.getPublicStaticFieldClassName(contClass, fieldNode.name);
+        final String className = classPackage + TransformerNameGenerator.getPublicStaticFieldClassName(contClass, fieldNode.name);
         for (MethodNode method : methodNodes) {
             InsnList inst = method.instructions;
             Iterator iter = inst.iterator();

@@ -5,7 +5,10 @@ import net.contentobjects.jnotify.JNotifyListener;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.transformer.ClassRedefiner;
 import org.coldswap.transformer.ReferenceReplacerManager;
-import org.coldswap.util.BytecodeClassLoader;
+import org.coldswap.util.ByteCodeClassLoader;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -66,29 +69,28 @@ public class ClassListener implements JNotifyListener {
     public void fileModified(int i, String root, String className) {
         if ((!"".equals(className)) && (null != className)) if (filter.accept(new File(className))) {
             Map<String, Class<?>> loaded = ClassInstrumenter.getInstance().getLoadedClasses();
-            String cls = className.replace(".class", "").replace(System.getProperty("file.separator"), ".");
-            logger.info("Class " + cls + " has been modified");
-            // maybe this className is located in one of  root subtrees, therefore whee need to remove the
-            // subtree from the className
-            int dotPosition = cls.lastIndexOf(".");
-            String clsName = cls;
-            if (dotPosition > -1) {
-                clsName = cls.substring(dotPosition + 1);
-            }
+            byte[] bytes = ByteCodeClassLoader.loadClassBytes(root + sep + className);
+            ClassNode classNode = new ClassNode(Opcodes.ASM4);
+            ClassReader classReader = new ClassReader(bytes);
+            classReader.accept(classNode, 0);
+            String clsName = classNode.name.replace('/', '.').replace(".class", "");
+
+            logger.info("Class " + clsName + " has been modified on the disk");
+
             if ((!"".equals(clsName)) && (null != clsName)) {
                 Class<?> clazz = loaded.get(clsName);
                 if (clazz == null) {
-                    logger.info(className + " is new class file!");
+                    logger.info(clsName + " is new class file!");
                     try {
                         Class<?> cla = Class.forName(clsName);
-                        byte[] bClass = BytecodeClassLoader.loadClassBytes(root + sep + className);
                         // run reference replacer
-                        bClass = refManager.runReferenceReplacer(bClass);
-                        ClassDefinition def = new ClassDefinition(cla, bClass);
+                        bytes = refManager.runReferenceReplacer(bytes);
+                        ClassDefinition def = new ClassDefinition(cla, bytes);
                         Instrumentation inst = ClassInstrumenter.getInstance().getInstrumenter();
                         inst.redefineClasses(def);
                     } catch (ClassNotFoundException e) {
-                        logger.warning(e.toString());
+                        // it means that the class was not loaded yet into machine
+                        // so no worries here
                     } catch (UnmodifiableClassException e) {
                         logger.warning(toString());
                     }

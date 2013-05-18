@@ -39,6 +39,7 @@ public class PrivateStaticFieldReplacer implements MemberReplacer {
     private final static Logger logger = Logger.getLogger(PrivateStaticFieldReplacer.class.getName());
     private final Class<?> aClass;
     private byte[] bytes;
+    private String classPackage = "";
 
     static {
         logger.setLevel(Level.ALL);
@@ -47,6 +48,12 @@ public class PrivateStaticFieldReplacer implements MemberReplacer {
     public PrivateStaticFieldReplacer(Class<?> clazz, byte[] bytes) {
         this.aClass = clazz;
         this.bytes = bytes;
+        String sPackage = "";
+        Package p = clazz.getPackage();
+        if (p != null) {
+            sPackage = p.getName();
+        }
+        classPackage = sPackage.replace(".", ClassUtil.fileSeparator) + ClassUtil.fileSeparator;
     }
 
     public byte[] replace() {
@@ -84,7 +91,7 @@ public class PrivateStaticFieldReplacer implements MemberReplacer {
                     // before anything change the field access to public static so that it can be referenced
                     // from other classes.
                     fNode.access = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC;
-                    byte[] newBClass = ByteCodeGenerator.newFieldClass(cn, fNode, insnList, className);
+                    byte[] newBClass = ByteCodeGenerator.newFieldClass(cn, fNode, insnList, classPackage + className);
                     try {
                         String cp = ClassUtil.getClassPath(aClass);
                         ByteCodeClassWriter.setClassPath(cp);
@@ -195,7 +202,7 @@ public class PrivateStaticFieldReplacer implements MemberReplacer {
     private void replaceReferences(ClassNode classNode, FieldNode fieldNode) {
         List<MethodNode> methodNodes = classNode.methods;
         String contClass = classNode.name.substring(classNode.name.lastIndexOf("/") + 1);
-        final String className = TransformerNameGenerator.getPrivateStaticFieldClassName(contClass, fieldNode.name);
+        final String className = classPackage + TransformerNameGenerator.getPrivateStaticFieldClassName(contClass, fieldNode.name);
         for (MethodNode method : methodNodes) {
             InsnList inst = method.instructions;
             Iterator iter = inst.iterator();

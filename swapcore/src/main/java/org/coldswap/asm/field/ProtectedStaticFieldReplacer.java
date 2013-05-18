@@ -41,6 +41,7 @@ public class ProtectedStaticFieldReplacer implements MemberReplacer {
     private final Class<?> aClass;
     private ReferenceReplacerManager replacerManager = ReferenceReplacerManager.getInstance();
     private byte[] bytes;
+    private String classPackage = "";
 
     static {
         logger.setLevel(Level.ALL);
@@ -49,6 +50,12 @@ public class ProtectedStaticFieldReplacer implements MemberReplacer {
     public ProtectedStaticFieldReplacer(Class<?> clazz, byte[] bytes) {
         this.aClass = clazz;
         this.bytes = bytes;
+        String sPackage = "";
+        Package p = clazz.getPackage();
+        if (p != null) {
+            sPackage = p.getName();
+        }
+        classPackage = sPackage.replace(".", ClassUtil.fileSeparator) + ClassUtil.fileSeparator;
     }
 
     public byte[] replace() {
@@ -82,7 +89,8 @@ public class ProtectedStaticFieldReplacer implements MemberReplacer {
                     String className = TransformerNameGenerator.getProtectedStaticFieldClassName(contClass, fNode.name);
                     // make field access as public static
                     fNode.access = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC;
-                    replacerManager.registerFieldReferenceReplacer(new ProtectedStaticFieldReferenceReplacer(contClass, fNode, className, contClass));
+                    replacerManager.registerFieldReferenceReplacer(new ProtectedStaticFieldReferenceReplacer(contClass,
+                            fNode, classPackage + className, contClass));
                     // remove the static reference from <clinit>
                     InsnList insnList = cleanClInit(cn, fNode, true);
                     // because the field might be inherited from superclass we need to copy
@@ -94,7 +102,7 @@ public class ProtectedStaticFieldReplacer implements MemberReplacer {
                     // before anything change the field access to public static so that it can be referenced
                     // from other classes.
                     fNode.access = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC;
-                    byte[] newBClass = ByteCodeGenerator.newFieldClass(cn, fNode, insnList, className);
+                    byte[] newBClass = ByteCodeGenerator.newFieldClass(cn, fNode, insnList, classPackage + className);
                     try {
                         String cp = ClassUtil.getClassPath(aClass);
                         ByteCodeClassWriter.setClassPath(cp);
@@ -209,7 +217,7 @@ public class ProtectedStaticFieldReplacer implements MemberReplacer {
     private void replaceReferences(ClassNode classNode, FieldNode fieldNode) {
         List<MethodNode> methodNodes = classNode.methods;
         String contClass = classNode.name.substring(classNode.name.lastIndexOf("/") + 1);
-        final String className = TransformerNameGenerator.getProtectedStaticFieldClassName(contClass, fieldNode.name);
+        final String className = classPackage + TransformerNameGenerator.getProtectedStaticFieldClassName(contClass, fieldNode.name);
         for (MethodNode method : methodNodes) {
             InsnList inst = method.instructions;
             Iterator iter = inst.iterator();
@@ -280,7 +288,7 @@ public class ProtectedStaticFieldReplacer implements MemberReplacer {
             Class<?> c = Class.forName(superName);
             String path = ClassUtil.getClassPath(c);
             path = path + ClassUtil.fileSeparator + superName + ".class";
-            byte[] clazz = BytecodeClassLoader.loadClassBytes(path);
+            byte[] clazz = ByteCodeClassLoader.loadClassBytes(path);
             ClassNode cNode = new ClassNode(Opcodes.ASM4);
             ClassReader cr = new ClassReader(clazz);
             cr.accept(cNode, 0);

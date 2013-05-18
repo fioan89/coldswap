@@ -5,7 +5,7 @@ import org.coldswap.asm.field.PrivateStaticFieldReplacer;
 import org.coldswap.asm.field.ProtectedStaticFieldReplacer;
 import org.coldswap.asm.field.PublicStaticFieldReplacer;
 import org.coldswap.instrumentation.ClassInstrumenter;
-import org.coldswap.util.BytecodeClassLoader;
+import org.coldswap.util.ByteCodeClassLoader;
 
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
@@ -65,7 +65,7 @@ public class ClassRedefiner {
      * @throws ClassNotFoundException
      */
     public void redefineClass(Class<?> clazz) throws UnmodifiableClassException, ClassNotFoundException {
-        byte[] classBytes = BytecodeClassLoader.loadClassBytes(this.path);
+        byte[] classBytes = ByteCodeClassLoader.loadClassBytes(this.path);
         // first make run the reference replacer
         classBytes = replacerManager.runReferenceReplacer(classBytes);
         // find new public static fields in the code and replace them
