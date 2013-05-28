@@ -78,18 +78,54 @@ public class ByteCodeGenerator {
         AbstractInsnNode firstInst = into.getFirst();
         InsnList tmp = new InsnList();
         tmp.add(new LabelNode());
-        tmp.add(new IntInsnNode(Opcodes.BIPUSH, nrOfParams));
-        tmp.add(new VarInsnNode(Opcodes.ISTORE, 3));
-        tmp.add(new LabelNode());
-        tmp.add(new VarInsnNode(Opcodes.AALOAD, 1));
         tmp.add(new LdcInsnNode(methodName));
+        tmp.add(new VarInsnNode(Opcodes.AALOAD, 1));
         tmp.add(new MethodInsnNode(Opcodes.H_INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z"));
         LabelNode l1 = new LabelNode();
         tmp.add(l1);
         tmp.add(new JumpInsnNode(Opcodes.IFEQ, l1));
         tmp.add(new VarInsnNode(Opcodes.AALOAD, 2));
         tmp.add(new InsnNode(Opcodes.ARRAYLENGTH));
-        tmp.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        if (nrOfParams <= 5) {
+            switch (nrOfParams) {
+                case 0: {
+                    tmp.add(new InsnNode(Opcodes.ICONST_0));
+                    break;
+                }
+
+                case 1: {
+                    tmp.add(new InsnNode(Opcodes.ICONST_1));
+                    break;
+                }
+
+                case 2: {
+                    tmp.add(new InsnNode(Opcodes.ICONST_2));
+                    break;
+                }
+
+                case 3: {
+                    tmp.add(new InsnNode(Opcodes.ICONST_3));
+                    break;
+                }
+
+                case 4: {
+                    tmp.add(new InsnNode(Opcodes.ICONST_4));
+                    break;
+                }
+
+                case 5: {
+                    tmp.add(new InsnNode(Opcodes.ICONST_5));
+                    break;
+                }
+                default:
+                    break;
+            }
+
+        } else if (nrOfParams <= Constants.BIPUSH_MAX) {
+            tmp.add(new VarInsnNode(Opcodes.BIPUSH, nrOfParams));
+        } else if (nrOfParams <= Constants.SIPUSH_MAX) {
+            tmp.add(new VarInsnNode(Opcodes.SIPUSH, nrOfParams));
+        }
         tmp.add(new JumpInsnNode(Opcodes.IF_ICMPNE, l1));
         tmp.add(toInsert);
         into.insertBefore(firstInst, tmp);

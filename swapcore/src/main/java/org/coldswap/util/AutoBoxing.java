@@ -67,21 +67,21 @@ public class AutoBoxing {
         String t = type.getDescriptor();
         if (t.length() > 1) {
             return null;
-        } else if ("Z".equals(type)) {
+        } else if ("Z".equals(t)) {
             return box('Z');
-        } else if ("B".equals(type)) {
+        } else if ("B".equals(t)) {
             return box('B');
-        } else if ("C".equals(type)) {
+        } else if ("C".equals(t)) {
             return box('C');
-        } else if ("S".equals(type)) {
+        } else if ("S".equals(t)) {
             return box('S');
-        } else if ("I".equals(type)) {
+        } else if ("I".equals(t)) {
             return box('I');
-        } else if ("J".equals(type)) {
+        } else if ("J".equals(t)) {
             return box('J');
-        } else if ("F".equals(type)) {
+        } else if ("F".equals(t)) {
             return box('F');
-        } else if ("D".equals(type)) {
+        } else if ("D".equals(t)) {
             return box('D');
         }
         return null;
@@ -116,21 +116,21 @@ public class AutoBoxing {
         String t = type.getDescriptor();
         if (t.length() > 1) {
             return null;
-        } else if ("Z".equals(type)) {
+        } else if ("Z".equals(t)) {
             return unbox('Z');
-        } else if ("B".equals(type)) {
+        } else if ("B".equals(t)) {
             return unbox('B');
-        } else if ("C".equals(type)) {
+        } else if ("C".equals(t)) {
             return unbox('C');
-        } else if ("S".equals(type)) {
+        } else if ("S".equals(t)) {
             return unbox('S');
-        } else if ("I".equals(type)) {
+        } else if ("I".equals(t)) {
             return unbox('I');
-        } else if ("J".equals(type)) {
+        } else if ("J".equals(t)) {
             return unbox('J');
-        } else if ("F".equals(type)) {
+        } else if ("F".equals(t)) {
             return unbox('F');
-        } else if ("D".equals(type)) {
+        } else if ("D".equals(t)) {
             return unbox('D');
         }
         return null;

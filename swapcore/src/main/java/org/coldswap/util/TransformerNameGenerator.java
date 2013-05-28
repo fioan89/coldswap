@@ -33,7 +33,8 @@ public class TransformerNameGenerator {
      * @return a {@link java.lang.String}, which is a concatenation of class name  and "__publicMethodsContainer".
      */
     public static String getPublicMethodName(String className) {
-        return className + "__publicMethodsContainer";
+
+        return getClassName(className) + "__publicMethodsContainer";
     }
 
 
@@ -42,20 +43,37 @@ public class TransformerNameGenerator {
     }
 
     public static String getPublicStaticFieldClassName(String containerClass, String fieldName) {
-        return "PS" + containerClass + fieldName;
+        return "PS" + getClassName(containerClass) + fieldName;
     }
 
     public static String getPrivateStaticFieldClassName(String containerClass, String fieldName) {
-        return "PVS" + containerClass + fieldName;
+        return "PVS" + getClassName(containerClass) + fieldName;
     }
 
     public static String getProtectedStaticFieldClassName(String containerClass, String fieldName) {
-        return "PRS" + containerClass + fieldName;
+        return "PRS" + getClassName(containerClass) + fieldName;
     }
 
     public static String getObjectMethodName(String containerClass) {
-        return "NMO" + containerClass + "newObjectMethod";
+        return "NMO" + getClassName(containerClass) + "newObjectMethod";
     }
 
+    /**
+     * Gets class name from a string that looks like package/name/ClassName.
+     *
+     * @param containerClass full name of a class(package name + class name).
+     * @return class name.
+     */
+    private static String getClassName(String containerClass) {
+        if (containerClass != null) {
+            int index = containerClass.lastIndexOf("/");
+            if (index > -1) {
+                return containerClass.substring(index + 1);
+            } else {
+                return containerClass;
+            }
+        }
+        return null;
+    }
 
 }

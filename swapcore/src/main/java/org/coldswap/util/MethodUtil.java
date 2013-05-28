@@ -20,7 +20,11 @@ package org.coldswap.util;
  * 8:39 PM       5/14/13
  */
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
 
 /**
@@ -48,14 +52,14 @@ public class MethodUtil {
             paramType = descs[0].substring(1).split(";");
             // append ";"
             for (int i = 0; i < paramType.length; i++) {
-                paramType[i] = paramType + ";";
+                paramType[i] = paramType[i] + ";";
             }
         }
-        Type[] toRet = null;
+        Type[] toRet = new Type[0];
         if (paramType != null) {
             toRet = new Type[paramType.length];
             for (int i = 0; i < toRet.length; i++) {
-                toRet[i] = Type.getReturnType(paramType[i]);
+                toRet[i] = Type.getType(paramType[i]);
             }
         }
         return toRet;
@@ -71,5 +75,17 @@ public class MethodUtil {
             toRet[i] = classToType(classes[i]);
         }
         return toRet;
+    }
+
+    public static MethodNode createHelperMethod(String className) {
+        int acc = Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS;
+        String methodName = TransformerNameGenerator.getObjectMethodName(className);
+        MethodNode mn = new MethodNode(acc, methodName, "(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;", null, null);
+        InsnList insnList = mn.instructions;
+        insnList.add(new LabelNode());
+        insnList.add(new InsnNode(Opcodes.ACONST_NULL));
+        insnList.add(new InsnNode(Opcodes.ARETURN));
+        return mn;
+
     }
 }
