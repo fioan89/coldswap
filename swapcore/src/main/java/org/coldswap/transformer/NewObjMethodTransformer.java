@@ -1,11 +1,12 @@
 package org.coldswap.transformer;
 
 import org.coldswap.util.ClassUtil;
-import org.coldswap.util.TransformerNameGenerator;
+import org.coldswap.util.MethodUtil;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
@@ -62,13 +63,7 @@ public class NewObjMethodTransformer implements ClassFileTransformer {
             cr.accept(cn, 0);
             // insert <clinit>V if it is not inserted
             List methods = cn.methods;
-            int acc = Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS;
-            String methodName = TransformerNameGenerator.getObjectMethodName(className);
-            MethodNode mn = new MethodNode(acc, methodName, "(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;", null, null);
-            InsnList insnList = mn.instructions;
-            insnList.add(new LabelNode());
-            insnList.add(new InsnNode(Opcodes.ACONST_NULL));
-            insnList.add(new InsnNode(Opcodes.ARETURN));
+            MethodNode mn = MethodUtil.createHelperMethod(className);
             cn.methods.add(mn);
             cn.accept(cw);
             byte[] toRet = cw.toByteArray();
