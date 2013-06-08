@@ -4,6 +4,8 @@ import org.coldswap.asm.MemberReplacer;
 import org.coldswap.asm.field.PrivateStaticFieldReplacer;
 import org.coldswap.asm.field.ProtectedStaticFieldReplacer;
 import org.coldswap.asm.field.PublicStaticFieldReplacer;
+import org.coldswap.asm.method.MethodCleaner;
+import org.coldswap.asm.method.PublicIntMethodReplacer;
 import org.coldswap.asm.method.PublicObjectMethodReplacer;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.util.ByteCodeClassLoader;
@@ -84,6 +86,11 @@ public class ClassRedefiner {
         classBytes = prRep.replace();
         MemberReplacer nvmoRep = new PublicObjectMethodReplacer(clazz, classBytes, maxMethods);
         classBytes = nvmoRep.replace();
+        MemberReplacer nvmiRep = new PublicIntMethodReplacer(clazz, classBytes, maxMethods);
+        classBytes = nvmiRep.replace();
+        // clean garbage methods
+        MemberReplacer garbage = new MethodCleaner(clazz, classBytes);
+        classBytes = garbage.replace();
         ClassDefinition cls = new ClassDefinition(clazz, classBytes);
         Instrumentation inst = ClassInstrumenter.getInstance().getInstrumenter();
         inst.redefineClasses(cls);
