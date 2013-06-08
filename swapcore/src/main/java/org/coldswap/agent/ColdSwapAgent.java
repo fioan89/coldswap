@@ -3,6 +3,7 @@ package org.coldswap.agent;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.tracker.ClassWatcher;
 import org.coldswap.transformer.ClInitTransformer;
+import org.coldswap.transformer.ObjectMethodTransformer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
@@ -42,6 +43,7 @@ public class ColdSwapAgent {
         argsParser.buildArgs();
         int maxMethods = (Integer) argsParser.getArgument("maxNumberOfMethods");
         inst.addTransformer(new ClInitTransformer());
+        inst.addTransformer(new ObjectMethodTransformer(maxMethods));
         instrumenter.setInstrumenter(inst);
         // set java library path for jnotify
         StringBuilder sb = new StringBuilder(System.getProperty("user.home"));

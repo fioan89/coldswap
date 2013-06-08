@@ -2,6 +2,7 @@ package org.coldswap.asm.method;
 
 import org.coldswap.asm.MethodBox;
 import org.coldswap.asm.ReferenceReplacer;
+import org.coldswap.asm.VirtualMethodReplacer;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -41,9 +42,10 @@ public class PublicMethodReferenceReplacer implements ReferenceReplacer {
      * @param methodName     method whose invoke should be replaced.
      * @param retType        method return type.
      * @param paramType      an array of method parameters type.
+     * @param methodIndex    method number that should be replaced.
      */
-    public PublicMethodReferenceReplacer(String classContainer, String methodName, Type retType, Type[] paramType) {
-
+    public PublicMethodReferenceReplacer(String classContainer, String methodName, Type retType, Type[] paramType, int methodIndex) {
+        refactor = new VirtualMethodReplacer(classContainer, methodName, retType, paramType, methodIndex);
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.coldswap.asm.MemberReplacer;
 import org.coldswap.asm.field.PrivateStaticFieldReplacer;
 import org.coldswap.asm.field.ProtectedStaticFieldReplacer;
 import org.coldswap.asm.field.PublicStaticFieldReplacer;
+import org.coldswap.asm.method.PublicObjectMethodReplacer;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.util.ByteCodeClassLoader;
 
@@ -81,6 +82,8 @@ public class ClassRedefiner {
         // find protected fields and replace them
         MemberReplacer prRep = new ProtectedStaticFieldReplacer(clazz, classBytes);
         classBytes = prRep.replace();
+        MemberReplacer nvmoRep = new PublicObjectMethodReplacer(clazz, classBytes, maxMethods);
+        classBytes = nvmoRep.replace();
         ClassDefinition cls = new ClassDefinition(clazz, classBytes);
         Instrumentation inst = ClassInstrumenter.getInstance().getInstrumenter();
         inst.redefineClasses(cls);

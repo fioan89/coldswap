@@ -44,8 +44,6 @@ class AgentArgsParser {
     private final Map<String, Object> opts;
     private final String args;
 
-    public static int nrOfMethods = 10;
-
     public AgentArgsParser(String args) {
         this.args = args;
         this.opts = new HashMap<String, Object>();
