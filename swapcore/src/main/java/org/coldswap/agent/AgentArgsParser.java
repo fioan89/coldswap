@@ -1,5 +1,7 @@
 package org.coldswap.agent;
 
+import org.coldswap.util.Constants;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,12 +42,15 @@ import java.util.Map;
  */
 class AgentArgsParser {
     private final Map<String, Object> opts;
-    private String args;
+    private final String args;
+
+    public static int nrOfMethods = 10;
 
     public AgentArgsParser(String args) {
         this.args = args;
         this.opts = new HashMap<String, Object>();
         this.opts.put("recursive", "false");
+        this.opts.put("maxNumberOfMethods", 10);
     }
 
     /**
@@ -67,6 +72,12 @@ class AgentArgsParser {
                     if ("true".equals(hashes[1])) {
                         this.opts.put("recursive", "true");
                     }
+                } else if ("maxNumberOfMethods".equals(hashes[0])) {
+                    int methodsNumber = Integer.valueOf((hashes[1]));
+                    if (methodsNumber > Constants.MAX_METHODS) {
+                        methodsNumber = Constants.MAX_METHODS;
+                    }
+                    this.opts.put("maxNumberOfMethods", methodsNumber);
                 } else {
                     throw new IllegalArgumentException("Illegal argument:" + hashes[0] + "\n");
                 }

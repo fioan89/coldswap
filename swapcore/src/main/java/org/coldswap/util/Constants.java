@@ -19,6 +19,7 @@ package org.coldswap.util;
  * Time: 8:43 PM
  */
 public class Constants {
+    public static final int MAX_METHODS = 25;
 
     public static final int ICONST_MIN = 0;
     public static final int ICONST_MAX = 5;
