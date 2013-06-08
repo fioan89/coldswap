@@ -87,14 +87,16 @@ public class VirtualMethodReplacer extends MethodBox {
                     }
 
                     // replace call with a custom call
-                    String newMethodName = null;
+                    String newMethodName;
+                    AbstractInsnNode newInvoke = null;
                     if (Constants.VAROBJECT.equals(methodType)) {
-                        TransformerNameGenerator.getObjectMethodNameWithCounter(classContainer, methodNumber);
-                    } else if (Constants.INT.endsWith(methodType)) {
-                        TransformerNameGenerator.getIntMethodNameWithCounter(classContainer, methodNumber);
+                        newMethodName = TransformerNameGenerator.getObjectMethodNameWithCounter(classContainer, methodNumber);
+                        newInvoke = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, classContainer, newMethodName, "([Ljava/lang/Object;)Ljava/lang/Object;");
+                    } else if (Constants.INT.equals(methodType)) {
+                        newMethodName = TransformerNameGenerator.getIntMethodNameWithCounter(classContainer, methodNumber);
+                        newInvoke = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, classContainer, newMethodName, "(I)Ljava/lang/Object;");
                     }
-                    if (newMethodName != null) {
-                        AbstractInsnNode newInvoke = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, classContainer, newMethodName, "([Ljava/lang/Object;)Ljava/lang/Object;");
+                    if (newInvoke != null) {
                         instructions.set(code, newInvoke);
                     }
                 }

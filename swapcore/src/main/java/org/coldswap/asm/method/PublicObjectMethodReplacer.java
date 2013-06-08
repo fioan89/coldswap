@@ -81,7 +81,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
         Iterator iterator = asmMethods.iterator();
         while (iterator.hasNext()) {
             final MethodNode mNode = (MethodNode) iterator.next();
-            // exlude <init>() and <cliniti>()
+            // exclude <init>() and <clinit>()
             if (!"<clinit>".equals(mNode.name) && !"<init>".equals(mNode.name)) {
                 boolean foundIt = false;
                 int publicAccessor = Opcodes.ACC_PUBLIC;
@@ -112,8 +112,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
                         // ignore any method that has return type of void
                         if (!mRetType.equals(Type.VOID_TYPE)) {
                             // work only with methods that have as a parameter
-                            // Object[]. If the conditions are not asserted, remove the code so that
-                            // redefinition will be successful.
+                            // Object[].
                             if (mParamType.length == 1 && mParamType[0].equals(Type.getType("[Ljava/lang/Object;"))) {
                                 if (counter < maxNumberOfMethods) {
                                     counter++;
@@ -130,10 +129,9 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
                                     factory.add(new VirtualMethodReplacer(cn.name, mNode.name, mRetType, mParamType,
                                             Constants.VAROBJECT, counter));
                                 }
+                                // remove this method
+                                iterator.remove();
                             }
-                            // remove method
-                            iterator.remove();
-
                         }
                     }
                 }
