@@ -42,10 +42,11 @@ public class PublicMethodReferenceReplacer implements ReferenceReplacer {
      * @param methodName     method whose invoke should be replaced.
      * @param retType        method return type.
      * @param paramType      an array of method parameters type.
+     * @param methodType     what kind of method should be replaced:"Object[]","int"
      * @param methodIndex    method number that should be replaced.
      */
-    public PublicMethodReferenceReplacer(String classContainer, String methodName, Type retType, Type[] paramType, int methodIndex) {
-        refactor = new VirtualMethodReplacer(classContainer, methodName, retType, paramType, methodIndex);
+    public PublicMethodReferenceReplacer(String classContainer, String methodName, Type retType, Type[] paramType, String methodType, int methodIndex) {
+        refactor = new VirtualMethodReplacer(classContainer, methodName, retType, paramType, methodType, methodIndex);
     }
 
     @Override

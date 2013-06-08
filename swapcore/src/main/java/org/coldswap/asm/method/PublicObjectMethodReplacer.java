@@ -26,6 +26,7 @@ import org.coldswap.asm.VirtualMethodReplacer;
 import org.coldswap.transformer.ReferenceReplacerManager;
 import org.coldswap.util.AutoBoxing;
 import org.coldswap.util.ByteCodeGenerator;
+import org.coldswap.util.Constants;
 import org.coldswap.util.MethodUtil;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
@@ -117,7 +118,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
                                 if (counter < maxNumberOfMethods) {
                                     counter++;
                                     refManager.registerFieldReferenceReplacer(new PublicMethodReferenceReplacer(cn.name,
-                                            mNode.name, mRetType, mParamType, counter));
+                                            mNode.name, mRetType, mParamType, Constants.VAROBJECT, counter));
                                     // autobox return type.
                                     if (AutoBoxing.isPrimitive(mRetType.getDescriptor())) {
                                         // replace any return reference with a boxing call and a areturn call
@@ -126,7 +127,8 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
                                     helperMethod[counter] = ByteCodeGenerator.insertNewNotVoidMethod(helperMethod[counter],
                                             mNode);
                                     // replace method call
-                                    factory.add(new VirtualMethodReplacer(cn.name, mNode.name, mRetType, mParamType, counter));
+                                    factory.add(new VirtualMethodReplacer(cn.name, mNode.name, mRetType, mParamType,
+                                            Constants.VAROBJECT, counter));
                                 }
                             }
                             // remove method

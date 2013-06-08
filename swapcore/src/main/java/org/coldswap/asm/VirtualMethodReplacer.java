@@ -2,6 +2,7 @@ package org.coldswap.asm;
 
 
 import org.coldswap.util.AutoBoxing;
+import org.coldswap.util.Constants;
 import org.coldswap.util.TransformerNameGenerator;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -33,6 +34,7 @@ import java.util.Iterator;
  */
 public class VirtualMethodReplacer extends MethodBox {
     private final int methodNumber;
+    private final String methodType;
 
     /**
      * Constructs an object that will contain basic information about a
@@ -43,11 +45,13 @@ public class VirtualMethodReplacer extends MethodBox {
      * @param methodName     the name of the method whose invoke should be replaced.
      * @param retType        return {@link org.objectweb.asm.Type} of the method
      * @param paramType      parameters {@link org.objectweb.asm.Type}.
+     * @param methodType     what kind of method should be replaced:"Object[]","int"
      * @param counter        a counter for method name generation.
      */
-    public VirtualMethodReplacer(String classContainer, String methodName, Type retType, Type[] paramType, int counter) {
+    public VirtualMethodReplacer(String classContainer, String methodName, Type retType, Type[] paramType, String methodType, int counter) {
         super(classContainer, methodName, retType, paramType);
         this.methodNumber = counter;
+        this.methodType = methodType;
     }
 
     @Override
@@ -83,9 +87,16 @@ public class VirtualMethodReplacer extends MethodBox {
                     }
 
                     // replace call with a custom call
-                    String newMethodName = TransformerNameGenerator.getObjectMethodNameWithCounter(classContainer, methodNumber);
-                    AbstractInsnNode newInvoke = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, classContainer, newMethodName, "([Ljava/lang/Object;)Ljava/lang/Object;");
-                    instructions.set(code, newInvoke);
+                    String newMethodName = null;
+                    if (Constants.VAROBJECT.equals(methodType)) {
+                        TransformerNameGenerator.getObjectMethodNameWithCounter(classContainer, methodNumber);
+                    } else if (Constants.INT.endsWith(methodType)) {
+                        TransformerNameGenerator.getIntMethodNameWithCounter(classContainer, methodNumber);
+                    }
+                    if (newMethodName != null) {
+                        AbstractInsnNode newInvoke = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, classContainer, newMethodName, "([Ljava/lang/Object;)Ljava/lang/Object;");
+                        instructions.set(code, newInvoke);
+                    }
                 }
             }
         }
