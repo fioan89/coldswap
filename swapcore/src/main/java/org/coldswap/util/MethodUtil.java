@@ -46,9 +46,11 @@ public class MethodUtil {
         String[] paramType = null;
         if (!descs[0].equals("(")) {
             paramType = descs[0].substring(1).split(";");
-            // append ";"
+            // append ";" if param is not primitive type
             for (int i = 0; i < paramType.length; i++) {
-                paramType[i] = paramType[i] + ";";
+                if (paramType[i].length() > 1) {
+                    paramType[i] = paramType[i] + ";";
+                }
             }
         }
         Type[] toRet = new Type[0];
@@ -71,19 +73,6 @@ public class MethodUtil {
             toRet[i] = classToType(classes[i]);
         }
         return toRet;
-    }
-
-    public static MethodNode createHelperMethod(String className) {
-        int acc = Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS;
-        String methodName = TransformerNameGenerator.getObjectMethodName(className);
-        MethodNode mn = new MethodNode(acc, methodName, "(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;", null, null);
-        InsnList insnList = mn.instructions;
-        insnList.add(new LabelNode());
-        insnList.add(new InsnNode(Opcodes.ACONST_NULL));
-        insnList.add(new InsnNode(Opcodes.ARETURN));
-        insnList.add(new LabelNode());
-        return mn;
-
     }
 
     public static MethodNode createObjectHelperMethod(String className, int counter) {
