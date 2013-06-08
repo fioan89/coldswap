@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 public class PublicStaticFieldReplacer implements MemberReplacer {
     private final static Logger logger = Logger.getLogger(PublicStaticFieldReplacer.class.getName());
     private ReferenceReplacerManager replacerManager = ReferenceReplacerManager.getInstance();
-    private final Class<?> aClass;
+    private Class<?> aClass;
     private byte[] bytes;
     private String classPackage = "";
 

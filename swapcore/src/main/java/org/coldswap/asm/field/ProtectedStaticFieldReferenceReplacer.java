@@ -30,7 +30,7 @@ import java.util.List;
  */
 
 public class ProtectedStaticFieldReferenceReplacer extends FieldBox implements ReferenceReplacer {
-    private String supperClass;
+    private final String supperClass;
 
     /**
      * Constructs a container for a field reference that shTetsould be searched and replaced.

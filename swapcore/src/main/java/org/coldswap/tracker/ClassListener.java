@@ -47,10 +47,15 @@ import java.util.logging.Logger;
 public class ClassListener implements JNotifyListener {
     private final static String sep = System.getProperty("file.separator");
     private final static Logger logger = Logger.getLogger(ClassListener.class.getName());
+    private final int maxNumberOfMethods;
     private ReferenceReplacerManager refManager = ReferenceReplacerManager.getInstance();
 
     static {
         logger.setLevel(Level.ALL);
+    }
+
+    public ClassListener(int maxNumberOfMethods) {
+        this.maxNumberOfMethods = maxNumberOfMethods;
     }
 
     private final FileFilter filter = new ClassFileFilter();
@@ -97,7 +102,7 @@ public class ClassListener implements JNotifyListener {
 
                     return;
                 }
-                ClassRedefiner redefiner = new ClassRedefiner(clsName, root + sep + className);
+                ClassRedefiner redefiner = new ClassRedefiner(clsName, root + sep + className, maxNumberOfMethods);
                 try {
                     redefiner.redefineClass(clazz);
                 } catch (UnmodifiableClassException e) {

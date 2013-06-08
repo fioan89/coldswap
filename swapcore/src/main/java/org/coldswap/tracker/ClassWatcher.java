@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 public class ClassWatcher implements Runnable {
     private String path = System.getProperty("user.home");
     private boolean watchSubtree;
+    private int maxNumberOfMethods;
     private int mask;
     private int watchID;
     private boolean alive;
@@ -66,15 +67,17 @@ public class ClassWatcher implements Runnable {
      * @param path         The selected directory to watch
      * @param watchSubtree if <code>true</code> it will watch for any file modification in
      *                     the subtree, <code>false</code> otherwise
+     * @param maxMethods   maximum number of new methods that could be inserted in the class schema.
      */
-    public ClassWatcher(String path, boolean watchSubtree) {
+    public ClassWatcher(String path, boolean watchSubtree, int maxMethods) {
         this(path);
         this.watchSubtree = watchSubtree;
+        this.maxNumberOfMethods = maxMethods;
     }
 
     synchronized private void startWatcher() {
         try {
-            watchID = JNotify.addWatch(path, mask, watchSubtree, new ClassListener());
+            watchID = JNotify.addWatch(path, mask, watchSubtree, new ClassListener(maxNumberOfMethods));
             String msg = watchSubtree ? " and it's subfolders.\n" : "\n";
             logger.info("Starting to watch:" + path + msg);
         } catch (JNotifyException e) {

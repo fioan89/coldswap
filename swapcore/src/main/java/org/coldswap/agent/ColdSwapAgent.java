@@ -38,6 +38,9 @@ public class ColdSwapAgent {
     }
 
     public static void premain(String args, Instrumentation inst) {
+        AgentArgsParser argsParser = new AgentArgsParser(args);
+        argsParser.buildArgs();
+        int maxMethods = (Integer) argsParser.getArgument("maxNumberOfMethods");
         inst.addTransformer(new ClInitTransformer());
         instrumenter.setInstrumenter(inst);
         // set java library path for jnotify
@@ -64,8 +67,6 @@ public class ColdSwapAgent {
             System.exit(0);
         }
 
-        AgentArgsParser argsParser = new AgentArgsParser(args);
-        argsParser.buildArgs();
         String[] dirs;
         ClassWatcher[] monitors;
         try {
@@ -90,7 +91,7 @@ public class ColdSwapAgent {
         }
 
         for (int i = 0; i < monitors.length; i++) {
-            monitors[i] = new ClassWatcher(dirs[i], "true".equals(recursive));
+            monitors[i] = new ClassWatcher(dirs[i], "true".equals(recursive), maxMethods);
             Thread t = new Thread(monitors[i]);
             t.setDaemon(true);
             t.start();

@@ -40,6 +40,7 @@ public class ClassRedefiner {
     private ReferenceReplacerManager replacerManager = ReferenceReplacerManager.getInstance();
     private final String clsName;
     private final String path;
+    private final int maxMethods;
     private static final Logger logger = Logger.getLogger(ClassRedefiner.class.getName());
 
     static {
@@ -52,9 +53,10 @@ public class ClassRedefiner {
      * @param className Name.class of a modified file.
      * @param classPath Class residing directory.
      */
-    public ClassRedefiner(String className, String classPath) {
+    public ClassRedefiner(String className, String classPath, int maxNumberOfMethods) {
         this.clsName = className.replace(".class", "").replace(System.getProperty("file.separator"), ".");
         this.path = classPath;
+        this.maxMethods = maxNumberOfMethods;
     }
 
     /**

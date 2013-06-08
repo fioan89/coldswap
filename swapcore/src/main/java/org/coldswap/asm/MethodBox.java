@@ -26,8 +26,8 @@ import org.objectweb.asm.tree.MethodNode;
  * Store info about a method that should be replaced with another invoke.
  */
 public abstract class MethodBox {
-    protected String classContainer;
-    protected String methodName;
+    protected final String classContainer;
+    protected final String methodName;
     protected final Type retType;
     protected final Type[] paramType;
 

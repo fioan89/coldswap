@@ -22,10 +22,7 @@ package org.coldswap.util;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 /**
  * Helper class for extracting method return type, method params type, etc...
@@ -45,7 +42,6 @@ public class MethodUtil {
         // get 2 strings one containing the var params and
         // the other the return type
         String[] descs = methodDesc.split("\\)");
-        String retType = descs[1];
         // get a list of params that this method has
         String[] paramType = null;
         if (!descs[0].equals("(")) {
@@ -85,6 +81,27 @@ public class MethodUtil {
         insnList.add(new LabelNode());
         insnList.add(new InsnNode(Opcodes.ACONST_NULL));
         insnList.add(new InsnNode(Opcodes.ARETURN));
+        insnList.add(new LabelNode());
+        return mn;
+
+    }
+
+    public static MethodNode createHelperMethod(String className, int counter) {
+        int acc = Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS;
+        String methodName = TransformerNameGenerator.getObjectMethodNameWithCounter(className, counter);
+        MethodNode mn = new MethodNode(acc, methodName, "([Ljava/lang/Object;)Ljava/lang/Object;", null, null);
+        InsnList insnList = mn.instructions;
+        LabelNode l0 = new LabelNode();
+        insnList.add(l0);
+        insnList.add(new InsnNode(Opcodes.ACONST_NULL));
+        insnList.add(new InsnNode(Opcodes.ARETURN));
+        LabelNode l1 = new LabelNode();
+        insnList.add(l1);
+        String classLiteral = "L" + className + ";";
+        mn.localVariables.add(new LocalVariableNode("this", classLiteral, null, l0, l1, 0));
+        mn.localVariables.add(new LocalVariableNode("args", "[Ljava/lang/Object;", null, l0, l1, 1));
+        mn.maxStack = 1;
+        mn.maxLocals = 2;
         return mn;
 
     }

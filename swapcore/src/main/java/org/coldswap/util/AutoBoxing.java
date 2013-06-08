@@ -39,6 +39,54 @@ public class AutoBoxing {
         logger.setLevel(Level.ALL);
     }
 
+    public static String getBoxClassName(Type type) {
+        String t = type.getDescriptor();
+        if (t.length() > 1) {
+            return null;
+        } else if ("Z".equals(t)) {
+            return "java/lang/Boolean";
+        } else if ("B".equals(t)) {
+            return "java/lang/Byte";
+        } else if ("C".equals(t)) {
+            return "java/lang/Character";
+        } else if ("S".equals(t)) {
+            return "java/lang/Short";
+        } else if ("I".equals(t)) {
+            return "java/lang/Integer";
+        } else if ("J".equals(t)) {
+            return "java/lang/Long";
+        } else if ("F".equals(t)) {
+            return "java/lang/Float";
+        } else if ("D".equals(t)) {
+            return "java/lang/Double";
+        }
+        return null;
+    }
+
+    public static String getUnBoxInvoke(Type type) {
+        String t = type.getDescriptor();
+        if (t.length() > 1) {
+            return null;
+        } else if ("Z".equals(t)) {
+            return "java/lang/Boolean.booleanValue";
+        } else if ("B".equals(t)) {
+            return "java/lang/Number.byteVale";
+        } else if ("C".equals(t)) {
+            return "java/lang/Character.charValue";
+        } else if ("S".equals(t)) {
+            return "java/lang/Number.shortValue";
+        } else if ("I".equals(t)) {
+            return "java/lang/Number.intValue";
+        } else if ("J".equals(t)) {
+            return "java/lang/Number.longValue";
+        } else if ("F".equals(t)) {
+            return "java/lang/Number.floatValue";
+        } else if ("D".equals(t)) {
+            return "java/lang/Number.doubleValue";
+        }
+        return null;
+    }
+
     public static InsnList box(char type) {
         switch (type) {
             case 'Z':
