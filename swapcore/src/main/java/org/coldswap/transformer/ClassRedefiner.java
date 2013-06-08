@@ -4,12 +4,9 @@ import org.coldswap.asm.MemberReplacer;
 import org.coldswap.asm.field.PrivateStaticFieldReplacer;
 import org.coldswap.asm.field.ProtectedStaticFieldReplacer;
 import org.coldswap.asm.field.PublicStaticFieldReplacer;
-import org.coldswap.asm.method.PublicNotVoidMethodReplacer;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.util.ByteCodeClassLoader;
-import org.coldswap.util.ByteCodeClassWriter;
 
-import java.io.IOException;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
@@ -82,14 +79,6 @@ public class ClassRedefiner {
         // find protected fields and replace them
         MemberReplacer prRep = new ProtectedStaticFieldReplacer(clazz, classBytes);
         classBytes = prRep.replace();
-        MemberReplacer pnvmRep = new PublicNotVoidMethodReplacer(clazz, classBytes);
-        classBytes = pnvmRep.replace();
-        ByteCodeClassWriter.setClassPath("/home/faur/coldswap");
-        try {
-            ByteCodeClassWriter.writeClass(clazz.getName(), classBytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         ClassDefinition cls = new ClassDefinition(clazz, classBytes);
         Instrumentation inst = ClassInstrumenter.getInstance().getInstrumenter();
         inst.redefineClasses(cls);

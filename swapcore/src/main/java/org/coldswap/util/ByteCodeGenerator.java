@@ -21,13 +21,23 @@ package org.coldswap.util;
  */
 
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Generates byte code for new classes.
  */
 public class ByteCodeGenerator {
+    private static final Map<LabelNode, LabelNode> labelNodes = new HashMap<LabelNode, LabelNode>();
+    private static final Map<Label, Label> labels = new HashMap<Label, Label>();
+    private static final Map<Integer, LabelNode> offset = new HashMap<Integer, LabelNode>();
+    private static final Map<Label, LabelNode> offsetL = new HashMap<Label, LabelNode>();
+    private static LabelNode firstLabel = null;
+    private static LabelNode lastLabel;
 
     /**
      * Creates a new class containing the new static field.
@@ -67,68 +77,17 @@ public class ByteCodeGenerator {
     /**
      * Inserts in the helper method a list of instructions
      *
-     * @param mNode      helper method
-     * @param toInsert   code to be inserted.
-     * @param methodName name of the method that contains the to be inserted code.
-     * @param nrOfParams the number of params that method to be inserted has.
-     * @return a list of instructions.
+     * @param mNode       helper method
+     * @param foundMethod method to be inserted.
+     * @return the helper method with it's new code
      */
-    public static InsnList insertNewNotVoidMethod(MethodNode mNode, InsnList toInsert, String methodName, int nrOfParams) {
-        InsnList into = mNode.instructions;
-        AbstractInsnNode firstInst = into.getFirst();
-        InsnList tmp = new InsnList();
-        tmp.add(new LabelNode());
-        tmp.add(new LdcInsnNode(methodName));
-        tmp.add(new VarInsnNode(Opcodes.AALOAD, 1));
-        tmp.add(new MethodInsnNode(Opcodes.H_INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z"));
-        LabelNode l1 = new LabelNode();
-        tmp.add(l1);
-        tmp.add(new JumpInsnNode(Opcodes.IFEQ, l1));
-        tmp.add(new VarInsnNode(Opcodes.AALOAD, 2));
-        tmp.add(new InsnNode(Opcodes.ARRAYLENGTH));
-        if (nrOfParams <= 5) {
-            switch (nrOfParams) {
-                case 0: {
-                    tmp.add(new InsnNode(Opcodes.ICONST_0));
-                    break;
-                }
+    public static MethodNode insertNewNotVoidMethod(MethodNode mNode, MethodNode foundMethod) {
+        mNode.instructions = foundMethod.instructions;
+        mNode.localVariables = foundMethod.localVariables;
+        mNode.maxLocals = foundMethod.maxLocals;
+        mNode.maxStack = foundMethod.maxStack;
+        mNode.instructions.resetLabels();
 
-                case 1: {
-                    tmp.add(new InsnNode(Opcodes.ICONST_1));
-                    break;
-                }
-
-                case 2: {
-                    tmp.add(new InsnNode(Opcodes.ICONST_2));
-                    break;
-                }
-
-                case 3: {
-                    tmp.add(new InsnNode(Opcodes.ICONST_3));
-                    break;
-                }
-
-                case 4: {
-                    tmp.add(new InsnNode(Opcodes.ICONST_4));
-                    break;
-                }
-
-                case 5: {
-                    tmp.add(new InsnNode(Opcodes.ICONST_5));
-                    break;
-                }
-                default:
-                    break;
-            }
-
-        } else if (nrOfParams <= Constants.BIPUSH_MAX) {
-            tmp.add(new VarInsnNode(Opcodes.BIPUSH, nrOfParams));
-        } else if (nrOfParams <= Constants.SIPUSH_MAX) {
-            tmp.add(new VarInsnNode(Opcodes.SIPUSH, nrOfParams));
-        }
-        tmp.add(new JumpInsnNode(Opcodes.IF_ICMPNE, l1));
-        tmp.add(toInsert);
-        into.insertBefore(firstInst, tmp);
-        return into;
+        return mNode;
     }
 }

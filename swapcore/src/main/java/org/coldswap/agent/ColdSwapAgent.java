@@ -3,7 +3,6 @@ package org.coldswap.agent;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.tracker.ClassWatcher;
 import org.coldswap.transformer.ClInitTransformer;
-import org.coldswap.transformer.NewObjMethodTransformer;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
@@ -40,7 +39,6 @@ public class ColdSwapAgent {
 
     public static void premain(String args, Instrumentation inst) {
         inst.addTransformer(new ClInitTransformer());
-        inst.addTransformer(new NewObjMethodTransformer());
         instrumenter.setInstrumenter(inst);
         // set java library path for jnotify
         StringBuilder sb = new StringBuilder(System.getProperty("user.home"));

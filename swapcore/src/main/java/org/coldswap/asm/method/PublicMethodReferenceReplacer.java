@@ -1,7 +1,6 @@
 package org.coldswap.asm.method;
 
 import org.coldswap.asm.MethodBox;
-import org.coldswap.asm.NVInvokeVirtualMethod;
 import org.coldswap.asm.ReferenceReplacer;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
@@ -44,7 +43,7 @@ public class PublicMethodReferenceReplacer implements ReferenceReplacer {
      * @param paramType      an array of method parameters type.
      */
     public PublicMethodReferenceReplacer(String classContainer, String methodName, Type retType, Type[] paramType) {
-        refactor = new NVInvokeVirtualMethod(classContainer, methodName, retType, paramType);
+
     }
 
     @Override
