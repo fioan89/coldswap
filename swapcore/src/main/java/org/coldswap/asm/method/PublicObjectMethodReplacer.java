@@ -70,7 +70,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
         // find first the helper method
         MethodNode[] helperMethod = new MethodNode[maxNumberOfMethods];
         for (int i = 0; i < maxNumberOfMethods; i++) {
-            helperMethod[i] = MethodUtil.createHelperMethod(cn.name, i);
+            helperMethod[i] = MethodUtil.createObjectHelperMethod(cn.name, i);
             cn.methods.add(helperMethod[i]);
         }
         // get a list of public/protected/package/private methods but exclude

@@ -86,7 +86,7 @@ public class MethodUtil {
 
     }
 
-    public static MethodNode createHelperMethod(String className, int counter) {
+    public static MethodNode createObjectHelperMethod(String className, int counter) {
         int acc = Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS;
         String methodName = TransformerNameGenerator.getObjectMethodNameWithCounter(className, counter);
         MethodNode mn = new MethodNode(acc, methodName, "([Ljava/lang/Object;)Ljava/lang/Object;", null, null);
@@ -100,6 +100,26 @@ public class MethodUtil {
         String classLiteral = "L" + className + ";";
         mn.localVariables.add(new LocalVariableNode("this", classLiteral, null, l0, l1, 0));
         mn.localVariables.add(new LocalVariableNode("args", "[Ljava/lang/Object;", null, l0, l1, 1));
+        mn.maxStack = 1;
+        mn.maxLocals = 2;
+        return mn;
+
+    }
+
+    public static MethodNode createIntHelperMethod(String className, int counter) {
+        int acc = Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS;
+        String methodName = TransformerNameGenerator.getIntMethodNameWithCounter(className, counter);
+        MethodNode mn = new MethodNode(acc, methodName, "(I)Ljava/lang/Object;", null, null);
+        InsnList insnList = mn.instructions;
+        LabelNode l0 = new LabelNode();
+        insnList.add(l0);
+        insnList.add(new InsnNode(Opcodes.ACONST_NULL));
+        insnList.add(new InsnNode(Opcodes.ARETURN));
+        LabelNode l1 = new LabelNode();
+        insnList.add(l1);
+        String classLiteral = "L" + className + ";";
+        mn.localVariables.add(new LocalVariableNode("this", classLiteral, null, l0, l1, 0));
+        mn.localVariables.add(new LocalVariableNode("arg", "I", null, l0, l1, 1));
         mn.maxStack = 1;
         mn.maxLocals = 2;
         return mn;

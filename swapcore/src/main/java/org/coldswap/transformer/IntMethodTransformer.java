@@ -1,5 +1,24 @@
 package org.coldswap.transformer;
 
+/**
+ * (C) Copyright 2013 Faur Ioan-Aurel.
+ * <p/>
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl-2.1.html
+ * <p/>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p/>
+ * Created with IntelliJ IDEA.
+ * User: faur
+ * Date: 6/8/13
+ * Time: 2:41 PM
+ */
+
 import org.coldswap.util.ClassUtil;
 import org.coldswap.util.MethodUtil;
 import org.coldswap.util.TransformerNameGenerator;
@@ -19,37 +38,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * (C) Copyright 2013 Faur Ioan-Aurel.
- * <p/>
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser General Public License
- * (LGPL) version 2.1 which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl-2.1.html
- * <p/>
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- * <p/>
- * Created with IntelliJ IDEA.
- * User: faur
- * Date: 6/6/13
- * Time: 8:06 PM
- */
-
-/**
  * Inserts helper methods for new methods that have this definition:
- * public <any return type> <any method name>(Object[] <any arg name>)
+ * public <any return type> <any method name>(int <any arg name>)
  */
-public class ObjectMethodTransformer implements ClassFileTransformer {
+public class IntMethodTransformer implements ClassFileTransformer {
     private final int maxNumberOfMethods;
-    private static final Logger logger = Logger.getLogger(ObjectMethodTransformer.class.getName());
+    private static final Logger logger = Logger.getLogger(IntMethodTransformer.class.getName());
 
     static {
         logger.setLevel(Level.ALL);
     }
 
-    public ObjectMethodTransformer(int maxNumberOfMethods) {
+    public IntMethodTransformer(int maxNumberOfMethods) {
         this.maxNumberOfMethods = maxNumberOfMethods;
     }
 
@@ -77,9 +77,9 @@ public class ObjectMethodTransformer implements ClassFileTransformer {
             }
             // insert helper methods if they do not exist.
             for (int i = 0; i < maxNumberOfMethods; i++) {
-                String name = TransformerNameGenerator.getObjectMethodNameWithCounter(className, i);
+                String name = TransformerNameGenerator.getIntMethodNameWithCounter(className, i);
                 if (!methodNames.contains(name)) {
-                    MethodNode mn = MethodUtil.createObjectHelperMethod(className, i);
+                    MethodNode mn = MethodUtil.createIntHelperMethod(className, i);
                     cn.methods.add(mn);
                 }
             }
