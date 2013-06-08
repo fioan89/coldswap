@@ -123,6 +123,28 @@ public class MethodUtil {
         mn.maxStack = 1;
         mn.maxLocals = 2;
         return mn;
+    }
 
+    public static int getRetOpcodeToReplace(Type retType) {
+        String retDesc = retType.getDescriptor();
+        int opcode = Opcodes.IRETURN;
+        if ("Z".equals(retDesc)) {
+            opcode = Opcodes.IRETURN;
+        } else if ("B".equals(retDesc)) {
+            opcode = Opcodes.IRETURN;
+        } else if ("C".equals(retDesc)) {
+            opcode = Opcodes.IRETURN;
+        } else if ("S".equals(retDesc)) {
+            opcode = Opcodes.IRETURN;
+        } else if ("I".equals(retDesc)) {
+            opcode = Opcodes.IRETURN;
+        } else if ("J".equals(retDesc)) {
+            opcode = Opcodes.LRETURN;
+        } else if ("F".equals(retDesc)) {
+            opcode = Opcodes.FRETURN;
+        } else if ("D".equals(retDesc)) {
+            opcode = Opcodes.DRETURN;
+        }
+        return opcode;
     }
 }

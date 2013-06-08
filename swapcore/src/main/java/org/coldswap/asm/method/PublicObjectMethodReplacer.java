@@ -152,7 +152,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
 
     private InsnList replaceReturn(InsnList insnList, Type retType) {
         final Type rretType = retType;
-        int retOpcode = getRetOpcodeToReplace(retType);
+        int retOpcode = MethodUtil.getRetOpcodeToReplace(retType);
         for (int i = 0; i < insnList.size(); i++) {
             AbstractInsnNode absIns = insnList.get(i);
             int opcode = absIns.getOpcode();
@@ -177,7 +177,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
                                         isBoxUnbox[0] = true;
                                     }
                                 }
-                                super.visitMethodInsn(i, s, s2, s3);    //To change body of overridden methods use File | Settings | File Templates.
+                                super.visitMethodInsn(i, s, s2, s3);
                             }
                         });
                     }
@@ -189,7 +189,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
                                 if ((s + s2).equals(AutoBoxing.getUnBoxInvoke(rretType))) {
                                     isBoxUnbox[1] = true;
                                 }
-                                super.visitMethodInsn(i, s, s2, s3);    //To change body of overridden methods use File | Settings | File Templates.
+                                super.visitMethodInsn(i, s, s2, s3);
                             }
                         });
                     }
@@ -205,34 +205,10 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
                     iList.add(new InsnNode(Opcodes.ARETURN));
                     insnList.insertBefore(absIns, iList);
                     insnList.remove(absIns);
-
                 }
             }
         }
         return insnList;
-    }
-
-    private int getRetOpcodeToReplace(Type retType) {
-        String retDesc = retType.getDescriptor();
-        int opcode = Opcodes.IRETURN;
-        if ("Z".equals(retDesc)) {
-            opcode = Opcodes.IRETURN;
-        } else if ("B".equals(retDesc)) {
-            opcode = Opcodes.IRETURN;
-        } else if ("C".equals(retDesc)) {
-            opcode = Opcodes.IRETURN;
-        } else if ("S".equals(retDesc)) {
-            opcode = Opcodes.IRETURN;
-        } else if ("I".equals(retDesc)) {
-            opcode = Opcodes.IRETURN;
-        } else if ("J".equals(retDesc)) {
-            opcode = Opcodes.LRETURN;
-        } else if ("F".equals(retDesc)) {
-            opcode = Opcodes.FRETURN;
-        } else if ("D".equals(retDesc)) {
-            opcode = Opcodes.DRETURN;
-        }
-        return opcode;
     }
 
 }
