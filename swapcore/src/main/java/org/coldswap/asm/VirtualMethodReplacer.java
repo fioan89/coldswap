@@ -7,10 +7,7 @@ import org.coldswap.util.TransformerNameGenerator;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 
@@ -78,6 +75,13 @@ public class VirtualMethodReplacer extends MethodBox {
                     if (AutoBoxing.isPrimitive(retType.getDescriptor())) {
                         AbstractInsnNode codeNext = code.getNext();
                         boolean discarded = false;
+                        // if returning primitive double or long and it is discarded with a pop2 than discard with
+                        // simple pop, becuase we use an Object as return value.
+                        if (codeNext.getOpcode() == Opcodes.POP2 && (retType.getDescriptor().equals("D")
+                                || retType.getDescriptor().equals("J"))) {
+                            instructions.set(codeNext, new InsnNode(Opcodes.POP));
+
+                        }
                         if (codeNext.getOpcode() == Opcodes.POP || codeNext.getOpcode() == Opcodes.POP2) {
                             discarded = true;
                         }
@@ -95,6 +99,9 @@ public class VirtualMethodReplacer extends MethodBox {
                     } else if (Constants.INT.equals(methodType)) {
                         newMethodName = TransformerNameGenerator.getIntMethodNameWithCounter(classContainer, methodNumber);
                         newInvoke = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, classContainer, newMethodName, "(I)Ljava/lang/Object;");
+                    } else if (Constants.FLOAT.equals(methodType)) {
+                        newMethodName = TransformerNameGenerator.getFloatMethodNameWithCounter(classContainer, methodNumber);
+                        newInvoke = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, classContainer, newMethodName, "(F)Ljava/lang/Object;");
                     }
                     if (newInvoke != null) {
                         instructions.set(code, newInvoke);
