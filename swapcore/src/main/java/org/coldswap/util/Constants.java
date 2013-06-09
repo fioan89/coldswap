@@ -22,6 +22,7 @@ public class Constants {
     public static final int MAX_METHODS = 25;
     public static final String VAROBJECT = "Object[]";
     public static final String INT = "int";
+    public static final String FLOAT = "float";
 
     public static final int ICONST_MIN = 0;
     public static final int ICONST_MAX = 5;
