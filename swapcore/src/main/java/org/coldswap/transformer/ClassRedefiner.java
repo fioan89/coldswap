@@ -76,7 +76,7 @@ public class ClassRedefiner {
         classBytes = psRep.replace();
         // find new private static fields in the code and replace them
         // since we search for private fields we don't need to run a reference replacer
-        // on otjer classes.
+        // on other classes.
         MemberReplacer psvRep = new PrivateStaticFieldReplacer(clazz, classBytes);
         classBytes = psvRep.replace();
         // find protected fields and replace them

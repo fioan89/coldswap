@@ -35,7 +35,7 @@ public abstract class MethodBox {
      * Constructs an object that will contain basic information about a
      * method whose call will be replaced.
      *
-     * @param classContainer the name of the class containig the method
+     * @param classContainer the name of the class containing the method
      *                       whose invoke should be replaced.
      * @param methodName     the name of the method whose invoke should be replaced.
      * @param retType        return {@link org.objectweb.asm.Type} of the method

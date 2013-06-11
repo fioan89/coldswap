@@ -37,7 +37,7 @@ public class VirtualMethodReplacer extends MethodBox {
      * Constructs an object that will contain basic information about a
      * method whose call will be replaced.
      *
-     * @param classContainer the name of the class containig the method
+     * @param classContainer the name of the class containing the method
      *                       whose invoke should be replaced.
      * @param methodName     the name of the method whose invoke should be replaced.
      * @param retType        return {@link org.objectweb.asm.Type} of the method
@@ -76,7 +76,7 @@ public class VirtualMethodReplacer extends MethodBox {
                         AbstractInsnNode codeNext = code.getNext();
                         boolean discarded = false;
                         // if returning primitive double or long and it is discarded with a pop2 than discard with
-                        // simple pop, becuase we use an Object as return value.
+                        // simple pop, because we use an Object as return value.
                         if (codeNext.getOpcode() == Opcodes.POP2 && (retType.getDescriptor().equals("D")
                                 || retType.getDescriptor().equals("J"))) {
                             instructions.set(codeNext, new InsnNode(Opcodes.POP));

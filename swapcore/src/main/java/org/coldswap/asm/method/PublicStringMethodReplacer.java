@@ -36,6 +36,12 @@ import java.util.logging.Logger;
  * Date: 6/11/13
  * Time: 6:37 PM
  */
+
+/**
+ * Finds any new method with this definition: public <any return type> <any method name>(String <any arg name>)
+ * and insert them in the helper methods. If there are greater new methods than maximum of methods allowed, they
+ * will be removed.
+ */
 public class PublicStringMethodReplacer implements MemberReplacer {
     private static final Logger logger = Logger.getLogger(PublicStringMethodReplacer.class.getName());
     private final int maxNumberOfMethods;

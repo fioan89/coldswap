@@ -33,7 +33,7 @@ public class ProtectedStaticFieldReferenceReplacer extends FieldBox implements R
     private final String supperClass;
 
     /**
-     * Constructs a container for a field reference that shTetsould be searched and replaced.
+     * Constructs a container for a field reference that should be searched and replaced.
      *
      * @param oldClass       the old class reference.
      * @param fieldToReplace the field that should be instrumented.
