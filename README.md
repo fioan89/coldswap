@@ -8,30 +8,36 @@ Currently **coldswap** will reload any change like:
 * new public static attribute
 * new private static attribute
 * new protected static attribute
-* new public {any_ret_type} {any_method_name}(Object[] {any arg name})
+* new public {ret_type} {method_name}(Object[] {arg_name})
 
     <i>Support for adding new methods that have this format: 
-    <code>public {any_ret_type} {any_method_name}(Object[] {any arg name})</code>. The number of methods that have this format 
+    <code>public {ret_type} {method_name}(Object[] {arg_name})</code>. The number of methods that have this format 
     and that could be replaced varies from 0 to 25, depending on the agent option with max 10 
     being the default if user hasn't specified anything.</i>
-* new public {any_ret_type} {any_method_name}(int {any arg name})
+* new public {ret_type} {method_name}(int {arg_name})
 
     <i>Support for adding new methods that have this format:   
-    <code>public {any_ret_type} {any_method_name}(int {any arg name})</code>. The number of methods that have this format   
+    <code>public {ret_type} {method_name}(int {arg_name})</code>. The number of methods that have this format   
     and that could be replaced varies from 0 to 25, depending on the agent option with max 10   
     being the default if user hasn't specified anything.</i>  
-* new public {any_ret_type} {any_method_name}(float {any arg name})  
+* new public {ret_type} {method_name}(float {arg_name})  
 
     <i>Support for adding new methods that have this format:     
     <code>public {any_ret_type} {any_method_name}(float {any arg name})</code>. The number of methods that have this format     
     and that could be replaced varies from 0 to 25, depending on the agent option with max 10     
     being the default if user hasn't specified anything.</i>  
-* new public {any_ret_type} {any_method_name}(String {any arg name})  
+* new public {ret_type} {method_name}(String {arg_name})  
 
     <i>Support for adding new methods that have this format:     
-    <code>public {any_ret_type} {any_method_name}(String {any arg name})</code>. The number of methods that have this format     
+    <code>public {ret_type} {method_name}(String {arg_name})</code>. The number of methods that have this format     
     and that could be replaced varies from 0 to 25, depending on the agent option with max 10     
-    being the default if user hasn't specified anything.</i>           
+    being the default if user hasn't specified anything.</i>  
+* new public {ret_type} {method_name}(long {arg_name})  
+
+    <i>Support for adding new methods that have this format:     
+    <code>public {ret_type} {method_name}(long {arg_name})</code>. The number of methods that have this format     
+    and that could be replaced varies from 0 to 25, depending on the agent option with max 10     
+    being the default if user hasn't specified anything.</i>                
 
 
 You don't need to run you java application in debug mode. You can run it normally with or without the
