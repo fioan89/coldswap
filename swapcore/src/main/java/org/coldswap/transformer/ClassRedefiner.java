@@ -90,6 +90,8 @@ public class ClassRedefiner {
         classBytes = nvmfRep.replace();
         MemberReplacer nvmstrRep = new PublicStringMethodReplacer(clazz, classBytes, maxMethods);
         classBytes = nvmstrRep.replace();
+        MemberReplacer nvmlongRep = new PublicLongMethodReplacer(clazz, classBytes, maxMethods);
+        classBytes = nvmlongRep.replace();
         // clean garbage methods
         MemberReplacer garbage = new MethodCleaner(clazz, classBytes);
         classBytes = garbage.replace();
