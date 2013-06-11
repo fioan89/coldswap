@@ -24,6 +24,7 @@ public class Constants {
     public static final String INT = "int";
     public static final String FLOAT = "float";
     public static final String STRING = "String";
+    public static final String LONG = "long";
 
     public static final int ICONST_MIN = 0;
     public static final int ICONST_MAX = 5;

@@ -114,6 +114,25 @@ public class MethodUtil {
         return mn;
     }
 
+    public static MethodNode createLongHelperMethod(String className, int counter) {
+        int acc = Opcodes.ACC_PUBLIC;
+        String methodName = TransformerNameGenerator.getLongMethodNameWithCounter(className, counter);
+        MethodNode mn = new MethodNode(acc, methodName, "(J)Ljava/lang/Object;", null, null);
+        InsnList insnList = mn.instructions;
+        LabelNode l0 = new LabelNode();
+        insnList.add(l0);
+        insnList.add(new InsnNode(Opcodes.ACONST_NULL));
+        insnList.add(new InsnNode(Opcodes.ARETURN));
+        LabelNode l1 = new LabelNode();
+        insnList.add(l1);
+        String classLiteral = "L" + className + ";";
+        mn.localVariables.add(new LocalVariableNode("this", classLiteral, null, l0, l1, 0));
+        mn.localVariables.add(new LocalVariableNode("arg", "J", null, l0, l1, 1));
+        mn.maxStack = 1;
+        mn.maxLocals = 3;
+        return mn;
+    }
+
     public static MethodNode createFloatHelperMethod(String className, int counter) {
         int acc = Opcodes.ACC_PUBLIC;
         String methodName = TransformerNameGenerator.getFloatMethodNameWithCounter(className, counter);
