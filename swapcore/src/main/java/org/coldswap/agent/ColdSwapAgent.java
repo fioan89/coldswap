@@ -46,6 +46,7 @@ public class ColdSwapAgent {
         inst.addTransformer(new IntMethodTransformer(maxMethods));
         inst.addTransformer(new FloatMethodTransformer(maxMethods));
         inst.addTransformer(new StringMethodTransformer(maxMethods));
+        inst.addTransformer(new LongMethodTransformer(maxMethods));
         instrumenter.setInstrumenter(inst);
         // set java library path for jnotify
         StringBuilder sb = new StringBuilder(System.getProperty("user.home"));
