@@ -70,6 +70,10 @@ public class TransformerNameGenerator {
         return "NMO" + getClassName(containerClass) + "newFloatMethod" + String.valueOf(counter);
     }
 
+    public static String getStringMethodNameWithCounter(String containerClass, int counter) {
+        return "NMO" + getClassName(containerClass) + "newStringMethod" + String.valueOf(counter);
+    }
+
     /**
      * Gets class name from a string that looks like package/name/ClassName.
      *

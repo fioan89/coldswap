@@ -102,6 +102,9 @@ public class VirtualMethodReplacer extends MethodBox {
                     } else if (Constants.FLOAT.equals(methodType)) {
                         newMethodName = TransformerNameGenerator.getFloatMethodNameWithCounter(classContainer, methodNumber);
                         newInvoke = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, classContainer, newMethodName, "(F)Ljava/lang/Object;");
+                    } else if (Constants.STRING.equals(methodType)) {
+                        newMethodName = TransformerNameGenerator.getStringMethodNameWithCounter(classContainer, methodNumber);
+                        newInvoke = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, classContainer, newMethodName, "(Ljava/lang/String;)Ljava/lang/Object;");
                     }
                     if (newInvoke != null) {
                         instructions.set(code, newInvoke);

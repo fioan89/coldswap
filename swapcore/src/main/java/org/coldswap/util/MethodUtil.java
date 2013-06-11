@@ -133,6 +133,25 @@ public class MethodUtil {
         return mn;
     }
 
+    public static MethodNode createStringHelperMethod(String className, int counter) {
+        int acc = Opcodes.ACC_PUBLIC;
+        String methodName = TransformerNameGenerator.getStringMethodNameWithCounter(className, counter);
+        MethodNode mn = new MethodNode(acc, methodName, "(Ljava/lang/String;)Ljava/lang/Object;", null, null);
+        InsnList insnList = mn.instructions;
+        LabelNode l0 = new LabelNode();
+        insnList.add(l0);
+        insnList.add(new InsnNode(Opcodes.ACONST_NULL));
+        insnList.add(new InsnNode(Opcodes.ARETURN));
+        LabelNode l1 = new LabelNode();
+        insnList.add(l1);
+        String classLiteral = "L" + className + ";";
+        mn.localVariables.add(new LocalVariableNode("this", classLiteral, null, l0, l1, 0));
+        mn.localVariables.add(new LocalVariableNode("arg", "Ljava/lang/String;", null, l0, l1, 1));
+        mn.maxStack = 1;
+        mn.maxLocals = 2;
+        return mn;
+    }
+
     public static int getRetOpcodeToReplace(Type retType) {
         String retDesc = retType.getDescriptor();
         int opcode = Opcodes.IRETURN;
