@@ -49,7 +49,33 @@ public class ByteCodeClassWriter {
         File classToRemove = new File(outDir, className + ".class");
         //classToRemove.deleteOnExit();
         DataOutputStream dout = new DataOutputStream(new FileOutputStream(classToRemove));
-        dout.write(bytes);
+        dout.write(bytes, 0, bytes.length);
+        dout.flush();
+        dout.close();
+    }
+
+    /**
+     * Writes the given byte array to a file using the last class path that was
+     * set with {@link ByteCodeClassWriter#setClassPath(String)}.
+     *
+     * @param className   the name of the class.
+     * @param bytes       array of bytes representing the class body.
+     * @param removeClass should remove or not, the file after app is down.
+     * @throws IOException                   if the file could not be written.
+     * @throws ClassPathNullPointerException if the class path was not settled before.
+     */
+    public static void writeClass(String className, byte[] bytes, boolean removeClass) throws IOException, ClassPathNullPointerException {
+        if (outDir == null) {
+            throw new ClassPathNullPointerException("Class Path is null! You must specify where to write class " +
+                    className + "!");
+        }
+        // create the file and schedule for removing when jvm stops
+        File classToRemove = new File(outDir, className + ".class");
+        if (removeClass) {
+            classToRemove.deleteOnExit();
+        }
+        DataOutputStream dout = new DataOutputStream(new FileOutputStream(classToRemove));
+        dout.write(bytes, 0, bytes.length);
         dout.flush();
         dout.close();
     }
