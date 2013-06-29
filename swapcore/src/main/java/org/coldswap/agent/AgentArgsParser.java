@@ -4,6 +4,7 @@ import org.coldswap.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * (C) Copyright 2013 Faur Ioan-Aurel.
@@ -49,6 +50,7 @@ class AgentArgsParser {
         this.opts = new HashMap<String, Object>();
         this.opts.put("recursive", "false");
         this.opts.put("maxNumberOfMethods", 10);
+        this.opts.put("logLevel", Level.ALL);
     }
 
     /**
@@ -76,6 +78,16 @@ class AgentArgsParser {
                         methodsNumber = Constants.MAX_METHODS;
                     }
                     this.opts.put("maxNumberOfMethods", methodsNumber);
+                } else if ("logLevel".equals(hashes[0])) {
+                    String level = hashes[1].toUpperCase();
+                    if ("SEVERE".equals(level)) {
+                        this.opts.put("logLevel", Level.SEVERE);
+                    } else if ("WARNING".equals(level)) {
+                        this.opts.put("logLevel", Level.WARNING);
+                    } else if ("INFO".equals(level)) {
+                        this.opts.put("logLevel", Level.INFO);
+                    }
+
                 } else {
                     throw new IllegalArgumentException("Illegal argument:" + hashes[0] + "\n");
                 }
