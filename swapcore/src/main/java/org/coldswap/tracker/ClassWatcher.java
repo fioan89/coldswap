@@ -22,9 +22,9 @@ package org.coldswap.tracker;
 
 import net.contentobjects.jnotify.JNotify;
 import net.contentobjects.jnotify.JNotifyException;
+import org.coldswap.util.ClassUtil;
 
 import java.io.File;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -57,7 +57,7 @@ public class ClassWatcher implements Runnable {
         // what kind of modification this watcher should notify
         this.mask = JNotify.FILE_ANY;
         this.alive = false;
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     /**

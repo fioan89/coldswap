@@ -15,7 +15,6 @@ import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -46,7 +45,7 @@ public class StringMethodTransformer implements ClassFileTransformer {
     private static final Logger logger = Logger.getLogger(StringMethodTransformer.class.getName());
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     public StringMethodTransformer(int maxNumberOfMethods) {

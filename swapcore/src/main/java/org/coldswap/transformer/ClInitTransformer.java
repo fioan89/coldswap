@@ -10,7 +10,6 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -42,7 +41,7 @@ public class ClInitTransformer implements ClassFileTransformer {
     private final static Logger logger = Logger.getLogger(ClInitTransformer.class.getName());
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     @SuppressWarnings("unchecked")

@@ -20,6 +20,7 @@ package org.coldswap.asm.method;
  */
 
 import org.coldswap.asm.MemberReplacer;
+import org.coldswap.util.ClassUtil;
 import org.coldswap.util.MethodUtil;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -31,7 +32,6 @@ import org.objectweb.asm.tree.MethodNode;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -46,7 +46,7 @@ public class MethodCleaner implements MemberReplacer {
     private byte[] bytes;
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     public MethodCleaner(Class<?> aClass, byte[] bytes) {

@@ -6,6 +6,7 @@ import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.transformer.ClassRedefiner;
 import org.coldswap.transformer.ReferenceReplacerManager;
 import org.coldswap.util.ByteCodeClassLoader;
+import org.coldswap.util.ClassUtil;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
@@ -16,7 +17,6 @@ import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -51,7 +51,7 @@ public class ClassListener implements JNotifyListener {
     private ReferenceReplacerManager refManager = ReferenceReplacerManager.getInstance();
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     public ClassListener(int maxNumberOfMethods) {

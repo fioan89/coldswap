@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -44,7 +43,7 @@ public class PublicStaticFieldReplacer implements MemberReplacer {
     private String classPackage = "";
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     public PublicStaticFieldReplacer(Class<?> clazz, byte[] bytes) {

@@ -92,9 +92,10 @@ public class ClassUtil {
             "com/intellij"
 
     };
+    public static Level logLevel = Level.ALL;
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(logLevel);
     }
 
     /**

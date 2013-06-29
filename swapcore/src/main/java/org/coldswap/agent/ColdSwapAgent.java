@@ -3,6 +3,7 @@ package org.coldswap.agent;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.tracker.ClassWatcher;
 import org.coldswap.transformer.*;
+import org.coldswap.util.ClassUtil;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
@@ -34,12 +35,13 @@ public class ColdSwapAgent {
     private static final ClassInstrumenter instrumenter = ClassInstrumenter.getInstance();
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     public static void premain(String args, Instrumentation inst) {
         AgentArgsParser argsParser = new AgentArgsParser(args);
         argsParser.buildArgs();
+        ClassUtil.logLevel = (Level) argsParser.getArgument("logLevel");
         int maxMethods = (Integer) argsParser.getArgument("maxNumberOfMethods");
         inst.addTransformer(new ClInitTransformer());
         inst.addTransformer(new ObjectMethodTransformer(maxMethods));

@@ -7,11 +7,11 @@ import org.coldswap.asm.field.PublicStaticFieldReplacer;
 import org.coldswap.asm.method.*;
 import org.coldswap.instrumentation.ClassInstrumenter;
 import org.coldswap.util.ByteCodeClassLoader;
+import org.coldswap.util.ClassUtil;
 
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -45,7 +45,7 @@ public class ClassRedefiner {
     private static final Logger logger = Logger.getLogger(ClassRedefiner.class.getName());
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     /**

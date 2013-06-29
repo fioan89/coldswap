@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -44,7 +43,7 @@ public class ProtectedStaticFieldReplacer implements MemberReplacer {
     private String classPackage = "";
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     public ProtectedStaticFieldReplacer(Class<?> clazz, byte[] bytes) {

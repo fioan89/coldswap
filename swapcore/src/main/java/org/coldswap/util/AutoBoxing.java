@@ -6,7 +6,6 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -36,7 +35,7 @@ public class AutoBoxing {
     private static final Logger logger = Logger.getLogger(AutoBoxing.class.getName());
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     public static String getBoxClassName(Type type) {

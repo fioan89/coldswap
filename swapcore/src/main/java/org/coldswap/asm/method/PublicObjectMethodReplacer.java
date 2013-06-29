@@ -24,10 +24,7 @@ import org.coldswap.asm.MemberReplacer;
 import org.coldswap.asm.MethodBox;
 import org.coldswap.asm.VirtualMethodReplacer;
 import org.coldswap.transformer.ReferenceReplacerManager;
-import org.coldswap.util.AutoBoxing;
-import org.coldswap.util.ByteCodeGenerator;
-import org.coldswap.util.Constants;
-import org.coldswap.util.MethodUtil;
+import org.coldswap.util.*;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
@@ -35,7 +32,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -51,7 +47,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
     private byte[] bytes;
 
     static {
-        logger.setLevel(Level.ALL);
+        logger.setLevel(ClassUtil.logLevel);
     }
 
     public PublicObjectMethodReplacer(Class<?> aClass, byte[] bytes, int maxMethods) {
