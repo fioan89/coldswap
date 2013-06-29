@@ -75,6 +75,10 @@ public class ClassListener implements JNotifyListener {
         if ((!"".equals(className)) && (null != className)) if (filter.accept(new File(className))) {
             Map<String, Class<?>> loaded = ClassInstrumenter.getInstance().getLoadedClasses();
             byte[] bytes = ByteCodeClassLoader.loadClassBytes(root + sep + className);
+            // first eight bytes for versioning
+            if (bytes.length < 8) {
+                return;
+            }
             ClassNode classNode = new ClassNode(Opcodes.ASM4);
             ClassReader classReader = new ClassReader(bytes);
             classReader.accept(classNode, 0);
