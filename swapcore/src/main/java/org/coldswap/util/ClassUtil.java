@@ -82,6 +82,8 @@ public class ClassUtil {
             "org/xml/sax",
             "org/coldswap",
             "org/objectweb",
+            "org/junit",
+            "org/hamcrest",
             "sun/util",
             "sun/misc",
             "sun/net",
