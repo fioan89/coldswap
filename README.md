@@ -54,6 +54,8 @@ How to install **coldswap**
   2. In a terminal:  
      <code>mvn package</code>
 
+<code> Please notice that for now you need mvn version 3.0.5 or BELOW because the goldin plugin does not support mvn
+ version starting with 3.1.0</code>
 
 How to use **coldswap**
 -----------------------
