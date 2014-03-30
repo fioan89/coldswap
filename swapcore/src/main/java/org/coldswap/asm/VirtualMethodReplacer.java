@@ -60,7 +60,7 @@ public class VirtualMethodReplacer extends MethodBox {
             if (code.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                 // check if methodToReplace is called
                 final boolean[] callFounded = new boolean[]{false};
-                code.accept(new MethodVisitor(Opcodes.ASM4) {
+                code.accept(new MethodVisitor(Opcodes.ASM5) {
                     @Override
                     public void visitMethodInsn(int i, String s, String s2, String s3) {
                         if (s.equals(classContainer) && s2.equals(methodName)) {

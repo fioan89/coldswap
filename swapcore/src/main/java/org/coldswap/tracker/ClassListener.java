@@ -79,7 +79,7 @@ public class ClassListener implements JNotifyListener {
             if (bytes.length < 8) {
                 return;
             }
-            ClassNode classNode = new ClassNode(Opcodes.ASM4);
+            ClassNode classNode = new ClassNode(Opcodes.ASM5);
             ClassReader classReader = new ClassReader(bytes);
             classReader.accept(classNode, 0);
             String clsName = classNode.name.replace('/', '.').replace(".class", "");

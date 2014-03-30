@@ -56,7 +56,7 @@ public class MethodCleaner implements MemberReplacer {
 
     @Override
     public byte[] replace() {
-        final ClassNode cn = new ClassNode(Opcodes.ASM4);
+        final ClassNode cn = new ClassNode(Opcodes.ASM5);
         ClassReader cr = new ClassReader(bytes);
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         cr.accept(cn, 0);

@@ -59,7 +59,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
     @Override
     public byte[] replace() {
         int counter = -1;
-        final ClassNode cn = new ClassNode(Opcodes.ASM4);
+        final ClassNode cn = new ClassNode(Opcodes.ASM5);
         ClassReader cr = new ClassReader(bytes);
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         cr.accept(cn, 0);
@@ -165,7 +165,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
                     valueOf = insnList.get(i - 1);
                     primitiveValue = insnList.get(i - 2);
                     if (valueOf.getOpcode() == Opcodes.INVOKESTATIC) {
-                        valueOf.accept(new MethodVisitor(Opcodes.ASM4) {
+                        valueOf.accept(new MethodVisitor(Opcodes.ASM5) {
                             @Override
                             public void visitMethodInsn(int i, String s, String s2, String s3) {
                                 if (AutoBoxing.isPrimitive(rretType.getDescriptor())) {
@@ -179,7 +179,7 @@ public class PublicObjectMethodReplacer implements MemberReplacer {
                     }
 
                     if (isBoxUnbox[0] && primitiveValue.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        primitiveValue.accept(new MethodVisitor(Opcodes.ASM4) {
+                        primitiveValue.accept(new MethodVisitor(Opcodes.ASM5) {
                             @Override
                             public void visitMethodInsn(int i, String s, String s2, String s3) {
                                 if ((s + s2).equals(AutoBoxing.getUnBoxInvoke(rretType))) {

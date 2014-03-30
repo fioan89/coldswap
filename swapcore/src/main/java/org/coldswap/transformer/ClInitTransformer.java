@@ -54,7 +54,7 @@ public class ClInitTransformer implements ClassFileTransformer {
                 }
             }
 
-            ClassNode cn = new ClassNode(Opcodes.ASM4);
+            ClassNode cn = new ClassNode(Opcodes.ASM5);
             ClassReader cr = new ClassReader(bytes);
             ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             // create adapter for method insertion.

@@ -56,7 +56,7 @@ public class ReferenceReplacerManager {
      * @return transformed class byte array.
      */
     public byte[] runReferenceReplacer(byte[] clazz) {
-        ClassNode classNode = new ClassNode(Opcodes.ASM4);
+        ClassNode classNode = new ClassNode(Opcodes.ASM5);
         ClassReader classReader = new ClassReader(clazz);
         ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classReader.accept(classNode, 0);

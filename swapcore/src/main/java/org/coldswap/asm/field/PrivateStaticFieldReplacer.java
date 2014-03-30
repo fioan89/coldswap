@@ -56,7 +56,7 @@ public class PrivateStaticFieldReplacer implements MemberReplacer {
     }
 
     public byte[] replace() {
-        final ClassNode cn = new ClassNode(Opcodes.ASM4);
+        final ClassNode cn = new ClassNode(Opcodes.ASM5);
         ClassReader cr = new ClassReader(bytes);
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES);
         cr.accept(cn, 0);
@@ -134,7 +134,7 @@ public class PrivateStaticFieldReplacer implements MemberReplacer {
                     if (ins2.getOpcode() == Opcodes.PUTSTATIC) {
                         final Boolean[] fieldFound = {false};
                         final FieldNode fNode = fieldNode;
-                        ins2.accept(new MethodVisitor(Opcodes.ASM4) {
+                        ins2.accept(new MethodVisitor(Opcodes.ASM5) {
                             @Override
                             public void visitFieldInsn(int i, String s, String s2, String s3) {
                                 if (s2.equals(fNode.name)) {
@@ -215,7 +215,7 @@ public class PrivateStaticFieldReplacer implements MemberReplacer {
                         final Boolean[] foundField = {false};
                         final ClassNode cNode = classNode;
                         final FieldNode fNode = fieldNode;
-                        absIns.accept(new MethodVisitor(Opcodes.ASM4) {
+                        absIns.accept(new MethodVisitor(Opcodes.ASM5) {
                             @Override
                             public void visitFieldInsn(int i, String s, String s2, String s3) {
                                 if (cNode.name.equals(s) && fNode.name.equals(s2)) {
@@ -233,7 +233,7 @@ public class PrivateStaticFieldReplacer implements MemberReplacer {
                         final Boolean[] foundField = {false};
                         final ClassNode cNode = classNode;
                         final FieldNode fNode = fieldNode;
-                        absIns.accept(new MethodVisitor(Opcodes.ASM4) {
+                        absIns.accept(new MethodVisitor(Opcodes.ASM5) {
                             @Override
                             public void visitFieldInsn(int i, String s, String s2, String s3) {
                                 if (cNode.name.equals(s) && fNode.name.equals(s2)) {

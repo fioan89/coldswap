@@ -59,7 +59,7 @@ public class PublicStaticFieldReferenceReplacer extends FieldBox implements Refe
                     // get type
                     if (absIns.getType() == AbstractInsnNode.FIELD_INSN) {
                         final Boolean[] foundField = {false};
-                        absIns.accept(new MethodVisitor(Opcodes.ASM4) {
+                        absIns.accept(new MethodVisitor(Opcodes.ASM5) {
                             @Override
                             public void visitFieldInsn(int i, String s, String s2, String s3) {
                                 if (oldClass.equals(s) && fieldToReplace.name.equals(s2)) {
@@ -76,7 +76,7 @@ public class PublicStaticFieldReferenceReplacer extends FieldBox implements Refe
                 } else if (opcode == Opcodes.PUTSTATIC) {
                     if (absIns.getType() == AbstractInsnNode.FIELD_INSN) {
                         final Boolean[] foundField = {false};
-                        absIns.accept(new MethodVisitor(Opcodes.ASM4) {
+                        absIns.accept(new MethodVisitor(Opcodes.ASM5) {
                             @Override
                             public void visitFieldInsn(int i, String s, String s2, String s3) {
                                 if (oldClass.equals(s) && fieldToReplace.name.equals(s2)) {
